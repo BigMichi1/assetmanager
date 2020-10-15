@@ -2,7 +2,7 @@
 
 namespace AssetManager\Service;
 
-use Assetic\Cache\CacheInterface;
+use Assetic\Contracts\Cache\CacheInterface;
 use AssetManager\Asset\AssetCache;
 use AssetManager\Asset\AssetWithMimeTypeInterface;
 use Interop\Container\ContainerInterface;
@@ -63,9 +63,9 @@ class AssetCacheManager
      *
      * @param string $path
      *
-     * @return array
+     * @return CacheInterface|null
      */
-    private function getProvider(string $path)
+    private function getProvider(string $path): ?CacheInterface
     {
         $cacheProvider = $this->getCacheProviderConfig($path);
 
