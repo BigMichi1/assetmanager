@@ -2,12 +2,12 @@
 
 namespace AssetManager\Resolver;
 
-use Assetic\Asset\FileAsset;
-use Assetic\Asset\HttpAsset;
+use AssetManager\Asset\FileAsset;
+use AssetManager\Asset\HttpAsset;
 use AssetManager\Exception;
 use AssetManager\Service\MimeResolver;
-use Traversable;
 use Laminas\Stdlib\ArrayUtils;
+use Traversable;
 
 /**
  * This resolver allows you to resolve using a 1 on 1 mapping to a file.
@@ -61,7 +61,7 @@ class MapResolver implements ResolverInterface, MimeResolverAwareInterface
      *
      * Maps should be arrays or Traversable objects with name => path pairs
      *
-     * @param  array|Traversable                  $map
+     * @param array|Traversable $map
      * @throws Exception\InvalidArgumentException
      */
     public function setMap($map)
@@ -100,8 +100,8 @@ class MapResolver implements ResolverInterface, MimeResolverAwareInterface
             return null;
         }
 
-        $file            = $this->map[$name];
-        $mimeType        = $this->getMimeResolver()->getMimeType($file);
+        $file = $this->map[$name];
+        $mimeType = $this->getMimeResolver()->getMimeType($file);
 
         if (false === filter_var($file, FILTER_VALIDATE_URL)) {
             $asset = new FileAsset($file);
@@ -109,7 +109,7 @@ class MapResolver implements ResolverInterface, MimeResolverAwareInterface
             $asset = new HttpAsset($file);
         }
 
-        $asset->mimetype = $mimeType;
+        $asset->setMimeType($mimeType);
 
         return $asset;
     }

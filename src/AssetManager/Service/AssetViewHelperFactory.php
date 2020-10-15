@@ -7,9 +7,8 @@ use AssetManager\Resolver\ResolverInterface;
 use AssetManager\View\Helper\Asset;
 use Interop\Container\ContainerInterface;
 use Laminas\Cache\Storage\Adapter\AbstractAdapter as AbstractCacheAdapter;
-use Laminas\ServiceManager\FactoryInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\ServiceManager\ServiceLocatorInterface;
-use Laminas\ServiceManager\AbstractPluginManager;
 
 class AssetViewHelperFactory implements FactoryInterface
 {
@@ -31,7 +30,7 @@ class AssetViewHelperFactory implements FactoryInterface
 
     /**
      * @param ServiceLocatorInterface $serviceLocator
-     * @param array                   $config
+     * @param array $config
      *
      * @return null
      */
@@ -57,18 +56,5 @@ class AssetViewHelperFactory implements FactoryInterface
         }
 
         return $cache;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return Asset
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator)
-    {
-        if ($serviceLocator instanceof AbstractPluginManager) {
-            $serviceLocator = $serviceLocator->getServiceLocator() ?: $serviceLocator;
-        }
-        return $this($serviceLocator, Asset::class);
     }
 }

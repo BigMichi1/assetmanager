@@ -18,6 +18,11 @@ class Asset extends AbstractHelper
     private $assetManagerResolver;
 
     /**
+     * @var AbstractCacheAdapter|null
+     */
+    private $cache;
+
+    /**
      * @param ResolverInterface         $assetManagerResolver
      * @param AbstractCacheAdapter|null $cache
      * @param array                     $config

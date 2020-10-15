@@ -2,13 +2,13 @@
 
 namespace AssetManager\Resolver;
 
-use Assetic\Asset\FileAsset;
 use Assetic\Factory\Resource\DirectoryResource;
-use AssetManager\Exception;
+use AssetManager\Asset\FileAsset;
+use AssetManager\Exception\InvalidArgumentException;
 use AssetManager\Exception\RuntimeException;
 use AssetManager\Service\MimeResolver;
-use SplFileInfo;
 use Laminas\Stdlib\SplStack;
+use SplFileInfo;
 
 /**
  * This resolver allows you to resolve from a stack of aliases to a path.
@@ -39,8 +39,8 @@ class AliasPathStackResolver implements ResolverInterface, MimeResolverAwareInte
      *
      * Populate the array stack with a list of aliases and their corresponding paths
      *
-     * @param  array                              $aliases
-     * @throws Exception\InvalidArgumentException
+     * @param array $aliases
+     * @throws InvalidArgumentException
      */
     public function __construct(array $aliases)
     {
@@ -52,21 +52,21 @@ class AliasPathStackResolver implements ResolverInterface, MimeResolverAwareInte
     /**
      * Add a single alias to the stack
      *
-     * @param  string                             $alias
-     * @param  string                             $path
-     * @throws Exception\InvalidArgumentException
+     * @param string|null $alias
+     * @param string|null $path
+     * @throws InvalidArgumentException
      */
-    private function addAlias($alias, $path)
+    private function addAlias(?string $alias, ?string $path)
     {
         if (!is_string($path)) {
-            throw new Exception\InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'Invalid path provided; must be a string, received %s',
                 gettype($path)
             ));
         }
 
         if (!is_string($alias)) {
-            throw new Exception\InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'Invalid alias provided; must be a string, received %s',
                 gettype($alias)
             ));
@@ -78,10 +78,10 @@ class AliasPathStackResolver implements ResolverInterface, MimeResolverAwareInte
     /**
      * Normalize a path for insertion in the stack
      *
-     * @param  string $path
+     * @param string $path
      * @return string
      */
-    private function normalizePath($path)
+    private function normalizePath(string $path)
     {
         return rtrim($path, '/\\') . DIRECTORY_SEPARATOR;
     }
@@ -109,12 +109,11 @@ class AliasPathStackResolver implements ResolverInterface, MimeResolverAwareInte
     /**
      * Set LFI protection flag
      *
-     * @param  bool $flag
-     * @return self
+     * @param bool $flag
      */
-    public function setLfiProtection($flag)
+    public function setLfiProtection(bool $flag)
     {
-        $this->lfiProtectionOn = (bool) $flag;
+        $this->lfiProtectionOn = $flag;
     }
 
     /**
@@ -148,9 +147,9 @@ class AliasPathStackResolver implements ResolverInterface, MimeResolverAwareInte
             if ($file->isReadable() && !$file->isDir()) {
                 $filePath = $file->getRealPath();
                 $mimeType = $this->getMimeResolver()->getMimeType($filePath);
-                $asset    = new FileAsset($filePath);
+                $asset = new FileAsset($filePath);
 
-                $asset->mimetype = $mimeType;
+                $asset->setMimeType($mimeType);
 
                 return $asset;
             }

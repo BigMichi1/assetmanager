@@ -8,8 +8,7 @@ use AssetManager\Resolver\AggregateResolverAwareInterface;
 use AssetManager\Resolver\MimeResolverAwareInterface;
 use AssetManager\Resolver\ResolverInterface;
 use Interop\Container\ContainerInterface;
-use Laminas\ServiceManager\FactoryInterface;
-use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 /**
  * Factory class for AssetManagerService
@@ -24,9 +23,9 @@ class AggregateResolverServiceFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $config         = $container->get('config');
-        $config         = isset($config['asset_manager']) ? $config['asset_manager'] : array();
-        $resolver       = new AggregateResolver();
+        $config = $container->get('config');
+        $config = isset($config['asset_manager']) ? $config['asset_manager'] : array();
+        $resolver = new AggregateResolver();
 
         if (empty($config['resolvers'])) {
             return $resolver;
@@ -59,15 +58,5 @@ class AggregateResolverServiceFactory implements FactoryInterface
         }
 
         return $resolver;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return AggregateResolver
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator)
-    {
-        return $this($serviceLocator, AggregateResolver::class);
     }
 }

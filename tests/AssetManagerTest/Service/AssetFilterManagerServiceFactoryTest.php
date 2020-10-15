@@ -5,8 +5,8 @@ namespace AssetManagerTest\Service;
 use AssetManager\Service\AssetFilterManager;
 use AssetManager\Service\AssetFilterManagerServiceFactory;
 use AssetManager\Service\MimeResolver;
-use PHPUnit\Framework\TestCase;
 use Laminas\ServiceManager\ServiceManager;
+use PHPUnit\Framework\TestCase;
 
 class AssetFilterManagerServiceFactoryTest extends TestCase
 {
@@ -28,9 +28,9 @@ class AssetFilterManagerServiceFactoryTest extends TestCase
 
         $serviceManager->setService(MimeResolver::class, new MimeResolver);
 
-        $t = new AssetFilterManagerServiceFactory($serviceManager);
+        $serviceFactory = new AssetFilterManagerServiceFactory();
 
-        $service = $t->createService($serviceManager);
+        $service = $serviceFactory($serviceManager, AssetFilterManager::class);
 
         $this->assertTrue($service instanceof AssetFilterManager);
     }

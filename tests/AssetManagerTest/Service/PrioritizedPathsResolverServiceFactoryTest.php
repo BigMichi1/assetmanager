@@ -4,8 +4,8 @@ namespace AssetManagerTest\Service;
 
 use AssetManager\Resolver\PrioritizedPathsResolver;
 use AssetManager\Service\PrioritizedPathsResolverServiceFactory;
-use PHPUnit\Framework\TestCase;
 use Laminas\ServiceManager\ServiceManager;
+use PHPUnit\Framework\TestCase;
 
 class PrioritizedPathsResolverServiceFactoryTest extends TestCase
 {
@@ -41,7 +41,7 @@ class PrioritizedPathsResolverServiceFactoryTest extends TestCase
 
         $factory = new PrioritizedPathsResolverServiceFactory();
         /* @var $resolver PrioritizedPathsResolver */
-        $resolver = $factory->createService($serviceManager);
+        $resolver = $factory($serviceManager, PrioritizedPathsResolver::class);
 
         $fetched = array();
 
@@ -65,7 +65,7 @@ class PrioritizedPathsResolverServiceFactoryTest extends TestCase
 
         $factory = new PrioritizedPathsResolverServiceFactory();
         /* @var $resolver PrioritizedPathsResolver */
-        $resolver = $factory->createService($serviceManager);
+        $resolver = $factory($serviceManager, PrioritizedPathsResolver::class);
         $this->assertEmpty($resolver->getPaths()->toArray());
     }
 }

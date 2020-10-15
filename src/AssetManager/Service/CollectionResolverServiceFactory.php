@@ -4,8 +4,7 @@ namespace AssetManager\Service;
 
 use AssetManager\Resolver\CollectionResolver;
 use Interop\Container\ContainerInterface;
-use Laminas\ServiceManager\FactoryInterface;
-use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class CollectionResolverServiceFactory implements FactoryInterface
 {
@@ -14,25 +13,13 @@ class CollectionResolverServiceFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $config      = $container->get('config');
+        $config = $container->get('config');
         $collections = array();
 
         if (isset($config['asset_manager']['resolver_configs']['collections'])) {
             $collections = $config['asset_manager']['resolver_configs']['collections'];
         }
 
-        $collectionResolver = new CollectionResolver($collections);
-
-        return $collectionResolver;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return CollectionResolver
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator)
-    {
-        return $this($serviceLocator, CollectionResolver::class);
+        return new CollectionResolver($collections);
     }
 }

@@ -2,10 +2,10 @@
 
 namespace AssetManagerTest\Service;
 
-use Assetic\Asset\AssetCache;
-use Assetic\Asset\FileAsset;
 use Assetic\Cache\CacheInterface;
 use Assetic\Cache\FilesystemCache;
+use AssetManager\Asset\AssetCache;
+use AssetManager\Asset\FileAsset;
 use AssetManager\Cache\FilePathCache;
 use AssetManager\Service\AssetCacheManager;
 use Laminas\ServiceManager\ServiceManager;
@@ -31,17 +31,18 @@ class AssetCacheManagerTest extends TestCase
             ),
         );
 
+        /** @var FileAsset $mockAsset */
         $mockAsset = $this->getMockBuilder(FileAsset::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockAsset->mimetype = 'image/png';
+        $mockAsset->setMimeType('image/png');
 
         $assetManager = new AssetCacheManager($serviceManager, $config);
         $assetCache = $assetManager->setCache('my/path', $mockAsset);
 
         $this->assertTrue($assetCache instanceof AssetCache);
-        $this->assertEquals($mockAsset->mimetype, $assetCache->mimetype);
+        $this->assertEquals($mockAsset->getMimeType(), $assetCache->getMimeType());
     }
 
     /**
@@ -56,11 +57,12 @@ class AssetCacheManagerTest extends TestCase
             ),
         );
 
+        /** @var FileAsset $mockAsset */
         $mockAsset = $this->getMockBuilder(FileAsset::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockAsset->mimetype = 'image/png';
+        $mockAsset->setMimeType('image/png');
 
         $assetManager = new AssetCacheManager($serviceManager, $config);
         $assetCache = $assetManager->setCache('not/defined', $mockAsset);

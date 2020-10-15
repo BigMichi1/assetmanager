@@ -2,13 +2,13 @@
 
 namespace AssetManager\Resolver;
 
-use Assetic\Asset\FileAsset;
 use Assetic\Factory\Resource\DirectoryResource;
-use AssetManager\Exception;
+use AssetManager\Asset\FileAsset;
+use AssetManager\Exception\InvalidArgumentException;
 use AssetManager\Service\MimeResolver;
+use Laminas\Stdlib\SplStack;
 use SplFileInfo;
 use Traversable;
-use Laminas\Stdlib\SplStack;
 
 /**
  * This resolver allows you to resolve from a stack of paths.
@@ -77,13 +77,13 @@ class PathStackResolver implements ResolverInterface, MimeResolverAwareInterface
     /**
      * Rest the path stack to the paths provided
      *
-     * @param  Traversable|array                  $paths
-     * @throws Exception\InvalidArgumentException
+     * @param Traversable|array $paths
+     * @throws InvalidArgumentException
      */
     public function setPaths($paths)
     {
         if (!is_array($paths) && !$paths instanceof Traversable) {
-            throw new Exception\InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'Invalid argument provided for $paths, expecting either an array or Traversable object, "%s" given',
                 is_object($paths) ? get_class($paths) : gettype($paths)
             ));
@@ -96,10 +96,10 @@ class PathStackResolver implements ResolverInterface, MimeResolverAwareInterface
     /**
      * Normalize a path for insertion in the stack
      *
-     * @param  string $path
+     * @param string $path
      * @return string
      */
-    protected function normalizePath($path)
+    protected function normalizePath(string $path)
     {
         $path = rtrim($path, '/\\');
         $path .= DIRECTORY_SEPARATOR;
@@ -110,13 +110,13 @@ class PathStackResolver implements ResolverInterface, MimeResolverAwareInterface
     /**
      * Add a single path to the stack
      *
-     * @param  string                             $path
-     * @throws Exception\InvalidArgumentException
+     * @param string|null $path
+     * @throws InvalidArgumentException
      */
-    public function addPath($path)
+    public function addPath(?string $path)
     {
         if (!is_string($path)) {
-            throw new Exception\InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'Invalid path provided; must be a string, received %s',
                 gettype($path)
             ));
@@ -148,12 +148,11 @@ class PathStackResolver implements ResolverInterface, MimeResolverAwareInterface
     /**
      * Set LFI protection flag
      *
-     * @param  bool $flag
-     * @return self
+     * @param bool $flag
      */
-    public function setLfiProtection($flag)
+    public function setLfiProtection(bool $flag)
     {
-        $this->lfiProtectionOn = (bool) $flag;
+        $this->lfiProtectionOn = $flag;
     }
 
     /**
@@ -181,9 +180,9 @@ class PathStackResolver implements ResolverInterface, MimeResolverAwareInterface
             if ($file->isReadable() && !$file->isDir()) {
                 $filePath = $file->getRealPath();
                 $mimeType = $this->getMimeResolver()->getMimeType($filePath);
-                $asset    = new FileAsset($filePath);
+                $asset = new FileAsset($filePath);
 
-                $asset->mimetype = $mimeType;
+                $asset->setMimeType($mimeType);
 
                 return $asset;
             }

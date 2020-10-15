@@ -3,14 +3,14 @@
 namespace AssetManager\Resolver;
 
 use ArrayAccess;
-use Assetic\Asset\FileAsset;
 use Assetic\Factory\Resource\DirectoryResource;
+use AssetManager\Asset\FileAsset;
 use AssetManager\Exception;
 use AssetManager\Service\MimeResolver;
-use SplFileInfo;
-use Traversable;
 use Laminas\Stdlib\PriorityQueue;
 use Laminas\Stdlib\SplStack;
+use SplFileInfo;
+use Traversable;
 
 /**
  * This resolver allows you to resolve from a multitude of prioritized paths.
@@ -108,12 +108,11 @@ class PrioritizedPathsResolver implements ResolverInterface, MimeResolverAwareIn
         $this->paths = new PriorityQueue();
     }
 
-     /**
-      * Add many paths to the stack at once
-      *
-      * @param  array|Traversable $paths
-      * @return self
-      */
+    /**
+     * Add many paths to the stack at once
+     *
+     * @param array|Traversable $paths
+     */
     public function addPaths($paths)
     {
         foreach ($paths as $path) {
@@ -124,7 +123,7 @@ class PrioritizedPathsResolver implements ResolverInterface, MimeResolverAwareIn
     /**
      * Rest the path stack to the paths provided
      *
-     * @param  Traversable|array                  $paths
+     * @param Traversable|array $paths
      * @throws Exception\InvalidArgumentException
      */
     public function setPaths($paths)
@@ -143,10 +142,10 @@ class PrioritizedPathsResolver implements ResolverInterface, MimeResolverAwareIn
     /**
      * Normalize a path for insertion in the stack
      *
-     * @param  string $path
+     * @param string $path
      * @return string
      */
-    protected function normalizePath($path)
+    protected function normalizePath(string $path)
     {
         $path = rtrim($path, '/\\');
         $path .= DIRECTORY_SEPARATOR;
@@ -157,12 +156,11 @@ class PrioritizedPathsResolver implements ResolverInterface, MimeResolverAwareIn
     /**
      * Set LFI protection flag
      *
-     * @param  bool $flag
-     * @return self
+     * @param bool $flag
      */
-    public function setLfiProtection($flag)
+    public function setLfiProtection(bool $flag)
     {
-        $this->lfiProtectionOn = (bool) $flag;
+        $this->lfiProtectionOn = $flag;
     }
 
     /**
@@ -190,9 +188,9 @@ class PrioritizedPathsResolver implements ResolverInterface, MimeResolverAwareIn
             if ($file->isReadable() && !$file->isDir()) {
                 $filePath = $file->getRealPath();
                 $mimeType = $this->getMimeResolver()->getMimeType($filePath);
-                $asset    = new FileAsset($filePath);
+                $asset = new FileAsset($filePath);
 
-                $asset->mimetype = $mimeType;
+                $asset->setMimeType($mimeType);
 
                 return $asset;
             }

@@ -8,8 +8,8 @@ use AssetManager\Exception;
 use AssetManager\Service\AssetFilterManager;
 use AssetManager\Service\AssetFilterManagerAwareInterface;
 use AssetManager\Service\MimeResolver;
-use Traversable;
 use Laminas\Stdlib\ArrayUtils;
+use Traversable;
 
 /**
  * This resolver allows the resolving of concatenated files.
@@ -78,7 +78,7 @@ class ConcatResolver implements
      *
      * Concats should be arrays or Traversable objects with name => path pairs
      *
-     * @param  array|Traversable                  $concats
+     * @param array|Traversable $concats
      * @throws Exception\InvalidArgumentException
      */
     public function setConcats($concats)
@@ -127,23 +127,23 @@ class ConcatResolver implements
 
         $resolvedAssets = array();
 
-        foreach ((array) $this->concats[$name] as $assetName) {
-            $resolvedAsset = $this->getAggregateResolver()->resolve((string) $assetName);
+        foreach ((array)$this->concats[$name] as $assetName) {
+            $resolvedAsset = $this->getAggregateResolver()->resolve((string)$assetName);
 
             if (!$resolvedAsset instanceof AssetInterface) {
                 throw new Exception\RuntimeException(
                     sprintf(
                         'Asset "%s" from collection "%s" can\'t be resolved '
-                        .'to an Asset implementing Assetic\Asset\AssetInterface.',
+                        . 'to an Asset implementing Assetic\Asset\AssetInterface.',
                         $assetName,
                         $name
                     )
                 );
             }
 
-            $resolvedAsset->mimetype = $this->getMimeResolver()->getMimeType(
+            $resolvedAsset->setMimeType($this->getMimeResolver()->getMimeType(
                 $resolvedAsset->getSourceRoot() . $resolvedAsset->getSourcePath()
-            );
+            ));
 
             $this->getAssetFilterManager()->setFilters($assetName, $resolvedAsset);
 

@@ -3,8 +3,10 @@
 namespace AssetManager\Service;
 
 use Assetic\Asset\AssetInterface;
+use AssetManager\Asset\AssetWithMimeTypeInterface;
 use AssetManager\Exception;
 use AssetManager\Resolver\ResolverInterface;
+use Laminas\Http\AbstractMessage;
 use Laminas\Http\PhpEnvironment\Request;
 use Laminas\Stdlib\RequestInterface;
 use Laminas\Stdlib\ResponseInterface;
@@ -33,7 +35,7 @@ class AssetManager implements
     protected $cacheManager;
 
     /**
-     * @var AssetInterface The asset
+     * @var AssetWithMimeTypeInterface The asset
      */
     protected $asset;
 
@@ -56,7 +58,7 @@ class AssetManager implements
      * Constructor
      *
      * @param ResolverInterface $resolver
-     * @param array             $config
+     * @param array $config
      *
      * @return AssetManager
      */
@@ -79,7 +81,7 @@ class AssetManager implements
     /**
      * Check if the request resolves to an asset.
      *
-     * @param    RequestInterface $request
+     * @param RequestInterface $request
      * @return   boolean
      */
     public function resolvesToAsset(RequestInterface $request)
@@ -124,7 +126,7 @@ class AssetManager implements
     /**
      * Set the asset on the response, including headers and content.
      *
-     * @param    ResponseInterface $response
+     * @param ResponseInterface $response
      * @return   ResponseInterface
      * @throws   Exception\RuntimeException
      */
@@ -136,16 +138,15 @@ class AssetManager implements
             );
         }
 
-        // @todo: Create Asset wrapper for mimetypes
-        if (empty($this->asset->mimetype)) {
+        if (empty($this->asset->getMimeType())) {
             throw new Exception\RuntimeException('Expected property "mimetype" on asset.');
         }
 
         $this->getAssetFilterManager()->setFilters($this->path, $this->asset);
 
-        $this->asset    = $this->getAssetCacheManager()->setCache($this->path, $this->asset);
-        $mimeType       = $this->asset->mimetype;
-        $assetContents  = $this->asset->dump();
+        $this->asset = $this->getAssetCacheManager()->setCache($this->path, $this->asset);
+        $mimeType = $this->asset->getMimeType();
+        $assetContents = $this->asset->dump();
 
         // @codeCoverageIgnoreStart
         if (function_exists('mb_strlen')) {
@@ -163,10 +164,12 @@ class AssetManager implements
             }
         }
 
-        $response->getHeaders()
-                 ->addHeaderLine('Content-Transfer-Encoding', 'binary')
-                 ->addHeaderLine('Content-Type', $mimeType)
-                 ->addHeaderLine('Content-Length', $contentLength);
+        if ($response instanceof AbstractMessage) {
+            $response->getHeaders()
+                ->addHeaderLine('Content-Transfer-Encoding', 'binary')
+                ->addHeaderLine('Content-Type', $mimeType)
+                ->addHeaderLine('Content-Length', $contentLength);
+        }
 
         $response->setContent($assetContents);
 
@@ -190,11 +193,11 @@ class AssetManager implements
 
         /* @var $request Request */
         /* @var $uri \Laminas\Uri\UriInterface */
-        $uri        = $request->getUri();
-        $fullPath   = $uri->getPath();
-        $path       = substr($fullPath, strlen($request->getBasePath()) + 1);
+        $uri = $request->getUri();
+        $fullPath = $uri->getPath();
+        $path = substr($fullPath, strlen($request->getBasePath()) + 1);
         $this->path = $path;
-        $asset      = $this->getResolver()->resolve($path);
+        $asset = $this->getResolver()->resolve($path);
 
         if (!$asset instanceof AssetInterface) {
             return false;

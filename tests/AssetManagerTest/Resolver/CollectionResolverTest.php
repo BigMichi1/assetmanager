@@ -3,9 +3,11 @@
 namespace AssetManagerTest\Resolver;
 
 use ArrayObject;
-use Assetic\Asset;
-use Assetic\Asset\AssetCache;
 use Assetic\Cache\CacheInterface;
+use AssetManager\Asset\AssetCache;
+use AssetManager\Asset\AssetCollection;
+use AssetManager\Asset\FileAsset;
+use AssetManager\Asset\StringAsset;
 use AssetManager\Exception\InvalidArgumentException;
 use AssetManager\Exception\RuntimeException;
 use AssetManager\Resolver\AggregateResolverAwareInterface;
@@ -27,7 +29,7 @@ class CollectionResolverTest extends TestCase
             ->expects($this->once())
             ->method('resolve')
             ->with('bacon')
-            ->will($this->returnValue(new Asset\FileAsset(__FILE__)));
+            ->will($this->returnValue(new FileAsset(__FILE__)));
 
         return $resolver;
     }
@@ -229,13 +231,13 @@ class CollectionResolverTest extends TestCase
         $callbackInvocationCount = 0;
         $callback = function () use (&$callbackInvocationCount) {
 
-            $asset1 = new Asset\StringAsset('bacon');
-            $asset2 = new Asset\StringAsset('eggs');
-            $asset3 = new Asset\StringAsset('Mud');
+            $asset1 = new StringAsset('bacon');
+            $asset2 = new StringAsset('eggs');
+            $asset3 = new StringAsset('Mud');
 
-            $asset1->mimetype = 'text/plain';
-            $asset2->mimetype = 'text/css';
-            $asset3->mimetype = 'text/javascript';
+            $asset1->setMimeType('text/plain');
+            $asset2->setMimeType('text/css');
+            $asset3->setMimeType('text/javascript');
 
             $callbackInvocationCount += 1;
             $assetName = "asset$callbackInvocationCount";
@@ -274,13 +276,13 @@ class CollectionResolverTest extends TestCase
 
         //assets with same 'last modified time'.
         $now = time();
-        $bacon = new Asset\StringAsset('bacon');
+        $bacon = new StringAsset('bacon');
         $bacon->setLastModified($now);
-        $bacon->mimetype = 'text/plain';
+        $bacon->setMimeType('text/plain');
 
-        $eggs = new Asset\StringAsset('eggs');
+        $eggs = new StringAsset('eggs');
         $eggs->setLastModified($now);
-        $eggs->mimetype = 'text/plain';
+        $eggs->setMimeType('text/plain');
 
         $assets = array(
             array('bacon', $bacon),
@@ -344,13 +346,13 @@ class CollectionResolverTest extends TestCase
         $callbackInvocationCount = 0;
         $callback = function () use (&$callbackInvocationCount) {
 
-            $asset1 = new Asset\StringAsset('bacon');
-            $asset2 = new Asset\StringAsset('eggs');
-            $asset3 = new Asset\StringAsset('Mud');
+            $asset1 = new StringAsset('bacon');
+            $asset2 = new StringAsset('eggs');
+            $asset3 = new StringAsset('Mud');
 
-            $asset1->mimetype = 'text/plain';
-            $asset2->mimetype = 'text/plain';
-            $asset3->mimetype = 'text/plain';
+            $asset1->setMimeType('text/plain');
+            $asset2->setMimeType('text/plain');
+            $asset3->setMimeType('text/plain');
 
             $callbackInvocationCount += 1;
             $assetName = "asset$callbackInvocationCount";
@@ -382,8 +384,8 @@ class CollectionResolverTest extends TestCase
 
         $collectionResolved = $resolver->resolve('myCollection');
 
-        $this->assertEquals($collectionResolved->mimetype, 'text/plain');
-        $this->assertTrue($collectionResolved instanceof Asset\AssetCollection);
+        $this->assertEquals($collectionResolved->getMimeType(), 'text/plain');
+        $this->assertTrue($collectionResolved instanceof AssetCollection);
     }
 
     /**

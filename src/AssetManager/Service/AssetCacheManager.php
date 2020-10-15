@@ -2,10 +2,10 @@
 
 namespace AssetManager\Service;
 
-use Assetic\Asset\AssetCache;
-use Assetic\Asset\AssetInterface;
 use Assetic\Cache\CacheInterface;
-use Laminas\ServiceManager\ServiceLocatorInterface;
+use AssetManager\Asset\AssetCache;
+use AssetManager\Asset\AssetWithMimeTypeInterface;
+use Interop\Container\ContainerInterface;
 
 /**
  * Asset Cache Manager.  Sets asset cache based on configuration.
@@ -13,7 +13,7 @@ use Laminas\ServiceManager\ServiceLocatorInterface;
 class AssetCacheManager
 {
     /**
-     * @var \Laminas\ServiceManager\ServiceLocatorInterface
+     * @var ContainerInterface
      */
     protected $serviceLocator;
 
@@ -25,15 +25,11 @@ class AssetCacheManager
     /**
      * Construct the AssetCacheManager
      *
-     * @param   ServiceLocatorInterface $serviceLocator
-     * @param   array                   $config
-     *
-     * @return  AssetCacheManager
+     * @param ContainerInterface $serviceLocator
+     * @param array $config
      */
-    public function __construct(
-        ServiceLocatorInterface $serviceLocator,
-        $config
-    ) {
+    public function __construct(ContainerInterface $serviceLocator, array $config)
+    {
         $this->serviceLocator = $serviceLocator;
         $this->config = $config;
     }
@@ -41,12 +37,12 @@ class AssetCacheManager
     /**
      * Set the cache (if any) on the asset, and return the new AssetCache.
      *
-     * @param string         $path  Path to asset
-     * @param AssetInterface $asset Assetic Asset Interface
+     * @param string $path Path to asset
+     * @param AssetWithMimeTypeInterface $asset Assetic Asset Interface
      *
-     * @return  AssetCache
+     * @return  AssetWithMimeTypeInterface
      */
-    public function setCache($path, AssetInterface $asset)
+    public function setCache(string $path, AssetWithMimeTypeInterface $asset)
     {
         $provider = $this->getProvider($path);
 
@@ -54,8 +50,8 @@ class AssetCacheManager
             return $asset;
         }
 
-        $assetCache             = new AssetCache($asset, $provider);
-        $assetCache->mimetype   = $asset->mimetype;
+        $assetCache = new AssetCache($asset, $provider);
+        $assetCache->setMimeType($asset->getMimeType());
 
         return $assetCache;
     }
@@ -65,11 +61,11 @@ class AssetCacheManager
      * then will attempt to get it from the service locator, finally will fallback
      * to a class mapper.
      *
-     * @param $path
+     * @param string $path
      *
      * @return array
      */
-    private function getProvider($path)
+    private function getProvider(string $path)
     {
         $cacheProvider = $this->getCacheProviderConfig($path);
 
@@ -102,12 +98,12 @@ class AssetCacheManager
     /**
      * Get the cache provider config.  Use default values if defined.
      *
-     * @param $path
+     * @param string $path
      *
      * @return null|array Cache config definition.  Returns null if not found in
      *                    config.
      */
-    private function getCacheProviderConfig($path)
+    private function getCacheProviderConfig(string $path)
     {
         $cacheProvider = null;
 
@@ -128,11 +124,11 @@ class AssetCacheManager
     /**
      * Class mapper to provide backwards compatibility
      *
-     * @param $class
+     * @param string $class
      *
      * @return string
      */
-    private function classMapper($class)
+    private function classMapper(string $class)
     {
         $classToCheck = $class;
         $classToCheck .= (substr($class, -5) === 'Cache') ? '' : 'Cache';

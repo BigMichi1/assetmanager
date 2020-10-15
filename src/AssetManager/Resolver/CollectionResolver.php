@@ -2,13 +2,13 @@
 
 namespace AssetManager\Resolver;
 
-use Assetic\Asset\AssetCollection;
-use Assetic\Asset\AssetInterface;
+use AssetManager\Asset\AssetCollection;
+use AssetManager\Asset\AssetWithMimeTypeInterface;
 use AssetManager\Exception;
 use AssetManager\Service\AssetFilterManager;
 use AssetManager\Service\AssetFilterManagerAwareInterface;
-use Traversable;
 use Laminas\Stdlib\ArrayUtils;
+use Traversable;
 
 /**
  * This resolver allows the resolving of collections.
@@ -52,7 +52,7 @@ class CollectionResolver implements
      *
      * Collections should be arrays or Traversable objects with name => path pairs
      *
-     * @param  array|Traversable                  $collections
+     * @param array|Traversable $collections
      * @throws Exception\InvalidArgumentException
      */
     public function setCollections($collections)
@@ -105,7 +105,7 @@ class CollectionResolver implements
     /**
      * {@inheritDoc}
      */
-    public function resolve($name)
+    public function resolve(string $name): ?AssetCollection
     {
         if (!isset($this->collections[$name])) {
             return null;
@@ -117,8 +117,8 @@ class CollectionResolver implements
             );
         }
 
-        $collection = new AssetCollection;
-        $mimeType   = null;
+        $collection = new AssetCollection();
+        $mimeType = null;
         $collection->setTargetPath($name);
 
         foreach ($this->collections[$name] as $asset) {
@@ -131,13 +131,13 @@ class CollectionResolver implements
                 throw new Exception\RuntimeException("Asset '$asset' could not be found.");
             }
 
-            if (!$res instanceof AssetInterface) {
+            if (!$res instanceof AssetWithMimeTypeInterface) {
                 throw new Exception\RuntimeException(
                     "Asset '$asset' does not implement Assetic\\Asset\\AssetInterface."
                 );
             }
 
-            if (null !== $mimeType && $res->mimetype !== $mimeType) {
+            if (null !== $mimeType && $res->getMimeType() !== $mimeType) {
                 throw new Exception\RuntimeException(sprintf(
                     'Asset "%s" from collection "%s" doesn\'t have the expected mime-type "%s".',
                     $asset,
@@ -146,14 +146,14 @@ class CollectionResolver implements
                 ));
             }
 
-            $mimeType = $res->mimetype;
+            $mimeType = $res->getMimeType();
 
             $this->getAssetFilterManager()->setFilters($asset, $res);
 
             $collection->add($res);
         }
 
-        $collection->mimetype = $mimeType;
+        $collection->setMimeType($mimeType);
 
         return $collection;
     }

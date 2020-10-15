@@ -55,8 +55,6 @@ class AggregateResolverTest extends TestCase
         $resolver = new AggregateResolver();
         $lowPriority = $this
             ->getMockBuilder(ResolverInterface::class)
-            ->onlyMethods(array('resolve'))
-            ->addMethods(array('collect'))
             ->getMock();
         $lowPriority
             ->expects($this->exactly(2))
@@ -68,8 +66,6 @@ class AggregateResolverTest extends TestCase
 
         $highPriority = $this
             ->getMockBuilder(ResolverInterface::class)
-            ->onlyMethods(array('resolve'))
-            ->addMethods(array('collect'))
             ->getMock();
         $highPriority
             ->expects($this->once())
@@ -90,6 +86,10 @@ class AggregateResolverTest extends TestCase
         $lowPriority = $this
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
+        $lowPriority
+            ->expects($this->exactly(2))
+            ->method('collect')
+            ->will($this->returnValue([]));
 
         $resolver->attach($lowPriority);
 
@@ -98,6 +98,10 @@ class AggregateResolverTest extends TestCase
         $highPriority = $this
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
+        $highPriority
+            ->expects($this->exactly(1))
+            ->method('collect')
+            ->will($this->returnValue([]));
         $resolver->attach($highPriority, 1000);
 
         $collection = $resolver->collect();

@@ -3,6 +3,7 @@
 namespace AssetManagerTest\Service;
 
 use AssetManager\Exception\RuntimeException;
+use AssetManager\Resolver\AggregateResolver;
 use AssetManager\Resolver\ResolverInterface;
 use AssetManager\Service\AggregateResolverServiceFactory;
 use AssetManager\Service\AssetFilterManager;
@@ -29,7 +30,7 @@ class AggregateResolverServiceFactoryTest extends TestCase
         $serviceManager->setService(MimeResolver::class, new MimeResolver);
 
         $factory = new AggregateResolverServiceFactory();
-        $resolver = $factory->createService($serviceManager);
+        $resolver = $factory($serviceManager, AggregateResolver::class);
         $this->assertInstanceOf(ResolverInterface::class, $resolver);
         $this->assertNull($resolver->resolve('/some-path'));
     }
@@ -59,8 +60,8 @@ class AggregateResolverServiceFactoryTest extends TestCase
         $serviceManager->setService('mocked_resolver', $mockedResolver);
         $serviceManager->setService(MimeResolver::class, new MimeResolver);
 
-        $factory = new AggregateResolverServiceFactory();
-        $resolver = $factory->createService($serviceManager);
+        $serviceFactory = new AggregateResolverServiceFactory();
+        $resolver = $serviceFactory($serviceManager, AggregateResolver::class);
 
         $this->assertSame('test-resolved-path', $resolver->resolve('test-path'));
     }
@@ -85,7 +86,7 @@ class AggregateResolverServiceFactoryTest extends TestCase
         );
 
         $factory = new AggregateResolverServiceFactory();
-        $factory->createService($serviceManager);
+        $factory($serviceManager, AggregateResolver::class);
     }
 
     public function testWillPrioritizeResolversCorrectly()
@@ -123,7 +124,7 @@ class AggregateResolverServiceFactoryTest extends TestCase
         $serviceManager->setService('mocked_resolver_2', $mockedResolver2);
 
         $factory = new AggregateResolverServiceFactory();
-        $resolver = $factory->createService($serviceManager);
+        $resolver = $factory($serviceManager, AggregateResolver::class);
 
         $this->assertSame('test-resolved-path', $resolver->resolve('test-path'));
     }
@@ -165,7 +166,7 @@ class AggregateResolverServiceFactoryTest extends TestCase
         $serviceManager->setService('mocked_resolver_2', $mockedResolver2);
 
         $factory = new AggregateResolverServiceFactory();
-        $resolver = $factory->createService($serviceManager);
+        $resolver = $factory($serviceManager, AggregateResolver::class);
 
         $this->assertSame('test-resolved-path', $resolver->resolve('test-path'));
     }
@@ -192,7 +193,7 @@ class AggregateResolverServiceFactoryTest extends TestCase
 
         $factory = new AggregateResolverServiceFactory();
 
-        $factory->createService($serviceManager);
+        $factory($serviceManager, AggregateResolver::class);
 
         $this->assertTrue($interfaceTestResolver->calledMime);
         $this->assertTrue($interfaceTestResolver->calledAggregate);

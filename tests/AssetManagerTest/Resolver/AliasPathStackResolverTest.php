@@ -2,13 +2,13 @@
 
 namespace AssetManagerTest\Resolver;
 
-use Assetic\Asset;
+use AssetManager\Asset\FileAsset;
 use AssetManager\Exception\InvalidArgumentException;
 use AssetManager\Resolver\AliasPathStackResolver;
 use AssetManager\Service\MimeResolver;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_Error;
 use ReflectionClass;
+use ReflectionException;
 use stdClass;
 use TypeError;
 
@@ -21,6 +21,7 @@ class AliasPathStackResolverTest extends TestCase
      * Test constructor passes
      *
      * @covers \AssetManager\Resolver\AliasPathStackResolver::__construct
+     * @throws ReflectionException
      */
     public function testConstructor()
     {
@@ -56,6 +57,7 @@ class AliasPathStackResolverTest extends TestCase
      * Test add alias method.
      *
      * @covers \AssetManager\Resolver\AliasPathStackResolver::addAlias
+     * @throws ReflectionException
      */
     public function testAddAlias()
     {
@@ -81,6 +83,7 @@ class AliasPathStackResolverTest extends TestCase
      * Test addAlias fails with bad key
      *
      * @covers \AssetManager\Resolver\AliasPathStackResolver::addAlias
+     * @throws ReflectionException
      */
     public function testAddAliasFailsWithBadKey()
     {
@@ -101,6 +104,7 @@ class AliasPathStackResolverTest extends TestCase
      * Test addAlias fails with bad Path
      *
      * @covers \AssetManager\Resolver\AliasPathStackResolver::addAlias
+     * @throws ReflectionException
      */
     public function testAddAliasFailsWithBadPath()
     {
@@ -122,6 +126,7 @@ class AliasPathStackResolverTest extends TestCase
      * Test normalize path
      *
      * @covers \AssetManager\Resolver\AliasPathStackResolver::normalizePath
+     * @throws ReflectionException
      */
     public function testNormalizePath()
     {
@@ -147,17 +152,17 @@ class AliasPathStackResolverTest extends TestCase
      */
     public function testGetAndSetMimeResolver()
     {
-        $mimeReolver = $this->getMockBuilder(MimeResolver::class)
+        $mimeResolver = $this->getMockBuilder(MimeResolver::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $resolver = new AliasPathStackResolver(array('my/alias/' => __DIR__));
 
-        $resolver->setMimeResolver($mimeReolver);
+        $resolver->setMimeResolver($mimeResolver);
 
         $returned = $resolver->getMimeResolver();
 
-        $this->assertEquals($mimeReolver, $returned);
+        $this->assertEquals($mimeResolver, $returned);
     }
 
     /**
@@ -217,8 +222,8 @@ class AliasPathStackResolverTest extends TestCase
         $this->assertTrue($resolver instanceof AliasPathStackResolver);
         $mimeResolver = new MimeResolver();
         $resolver->setMimeResolver($mimeResolver);
-        $fileAsset = new Asset\FileAsset(__FILE__);
-        $fileAsset->mimetype = $mimeResolver->getMimeType(__FILE__);
+        $fileAsset = new FileAsset(__FILE__);
+        $fileAsset->setMimeType($mimeResolver->getMimeType(__FILE__));
         $this->assertEquals($fileAsset, $resolver->resolve('my/alias/' . basename(__FILE__)));
         $this->assertNull($resolver->resolve('i-do-not-exist.php'));
     }
@@ -233,8 +238,8 @@ class AliasPathStackResolverTest extends TestCase
         $resolver = new AliasPathStackResolver(array('my/alias' => __DIR__));
         $mimeResolver = new MimeResolver();
         $resolver->setMimeResolver($mimeResolver);
-        $fileAsset = new Asset\FileAsset(__FILE__);
-        $fileAsset->mimetype = $mimeResolver->getMimeType(__FILE__);
+        $fileAsset = new FileAsset(__FILE__);
+        $fileAsset->setMimeType($mimeResolver->getMimeType(__FILE__));
         $this->assertEquals($fileAsset, $resolver->resolve('my/alias/' . basename(__FILE__)));
     }
 
@@ -246,8 +251,8 @@ class AliasPathStackResolverTest extends TestCase
         $resolver = new AliasPathStackResolver(array('AliasPathStackResolverTest/' => __DIR__));
         $mimeResolver = new MimeResolver();
         $resolver->setMimeResolver($mimeResolver);
-        $fileAsset = new Asset\FileAsset(__FILE__);
-        $fileAsset->mimetype = $mimeResolver->getMimeType(__FILE__);
+        $fileAsset = new FileAsset(__FILE__);
+        $fileAsset->setMimeType($mimeResolver->getMimeType(__FILE__));
         $this->assertEquals($fileAsset, $resolver->resolve('AliasPathStackResolverTest/' . basename(__FILE__)));
 
         $map = array(
@@ -256,8 +261,8 @@ class AliasPathStackResolverTest extends TestCase
         );
         $resolver = new AliasPathStackResolver($map);
         $resolver->setMimeResolver(new MimeResolver());
-        $fileAsset = new Asset\FileAsset(__FILE__);
-        $fileAsset->mimetype = $mimeResolver->getMimeType(__FILE__);
+        $fileAsset = new FileAsset(__FILE__);
+        $fileAsset->setMimeType($mimeResolver->getMimeType(__FILE__));
         $this->assertEquals($fileAsset, $resolver->resolve('prefix/AliasPathStackResolverTest/' . basename(__FILE__)));
     }
 

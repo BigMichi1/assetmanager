@@ -2,9 +2,9 @@
 
 namespace AssetManagerTest\Service;
 
-use Assetic\Asset\AssetInterface;
-use Assetic\Asset\StringAsset;
-use Assetic\Filter\FilterInterface;
+use Assetic\Contracts\Filter\FilterInterface;
+use AssetManager\Asset\AssetWithMimeTypeInterface;
+use AssetManager\Asset\StringAsset;
 use AssetManager\Exception\RuntimeException;
 use AssetManager\Service\AssetFilterManager;
 use CustomFilter;
@@ -105,7 +105,7 @@ class AssetFilterManagerTest extends TestCase
 
         $filterInstance = null;
 
-        $asset = $this->getMockBuilder(AssetInterface::class)->getMock();
+        $asset = $this->getMockBuilder(AssetWithMimeTypeInterface::class)->getMock();
         $asset
             ->expects($this->any())
             ->method('ensureFilter')

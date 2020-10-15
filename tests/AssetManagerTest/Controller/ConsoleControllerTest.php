@@ -4,6 +4,7 @@ namespace AssetManagerTest\Controller;
 
 use AssetManager\Controller\ConsoleController;
 use AssetManager\Resolver\MapResolver;
+use AssetManager\Resolver\ResolverInterface;
 use AssetManager\Service\AssetCacheManager;
 use AssetManager\Service\AssetFilterManager;
 use AssetManager\Service\AssetManager;
@@ -14,7 +15,6 @@ use Laminas\Console\Request as ConsoleRequest;
 use Laminas\Mvc\MvcEvent;
 use Laminas\Router\RouteMatch;
 use Laminas\ServiceManager\ServiceLocatorInterface;
-use Laminas\View\Resolver\ResolverInterface;
 use PHPUnit\Framework\TestCase;
 
 class ConsoleControllerTest extends TestCase
@@ -51,7 +51,7 @@ class ConsoleControllerTest extends TestCase
         $assetFilterManager = new AssetFilterManager($config['filters']);
         $assetCacheManager = $this->getAssetCacheManager();
 
-        $resolver = $this->getResolver(__DIR__ . '/../../_files/require-jquery.js');
+        $resolver = $this->getResolver();
         $assetManager = new AssetManager($resolver, $config);
         $assetManager->setAssetFilterManager($assetFilterManager);
         $assetManager->setAssetCacheManager($assetCacheManager);
@@ -103,8 +103,7 @@ class ConsoleControllerTest extends TestCase
                 )
             ),
         );
-        $assetCacheManager = new AssetCacheManager($serviceLocator, $config);
-        return $assetCacheManager;
+        return new AssetCacheManager($serviceLocator, $config);
     }
 
     public function testWarmupAction()

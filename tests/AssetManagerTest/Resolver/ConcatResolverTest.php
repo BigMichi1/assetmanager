@@ -2,8 +2,8 @@
 
 namespace AssetManagerTest\Resolver;
 
-use Assetic\Asset\FileAsset;
 use AssetManager\Asset\AggregateAsset;
+use AssetManager\Asset\FileAsset;
 use AssetManager\Resolver\AggregateResolverAwareInterface;
 use AssetManager\Resolver\ConcatResolver;
 use AssetManager\Resolver\ResolverInterface;
@@ -70,7 +70,7 @@ class ConcatResolverTest extends TestCase
 
         $resolver = new ConcatResolver;
 
-        $resolver->setAggregateResolver(new stdClass);
+        $resolver->setAggregateResolver(new stdClass());
     }
 
     public function testSetConcatSuccess()
@@ -146,11 +146,9 @@ class ConcatResolverTest extends TestCase
         );
 
         $callback = function ($file) {
-            $asset = new FileAsset(
+            return new FileAsset(
                 $file
             );
-
-            return $asset;
         };
 
         $aggregateResolver = $this

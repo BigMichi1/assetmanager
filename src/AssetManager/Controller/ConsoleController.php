@@ -4,10 +4,12 @@ namespace AssetManager\Controller;
 
 use AssetManager\Service\AssetManager;
 use Laminas\Console\Adapter\AdapterInterface as Console;
+use Laminas\Console\Request;
 use Laminas\Console\Request as ConsoleRequest;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Stdlib\RequestInterface;
 use Laminas\Stdlib\ResponseInterface;
+use RuntimeException;
 
 /**
  * Class ConsoleController
@@ -18,12 +20,12 @@ class ConsoleController extends AbstractActionController
 {
 
     /**
-     * @var \Laminas\Console\Adapter\AdapterInterface console object
+     * @var Console console object
      */
     protected $console;
 
     /**
-     * @var \AssetManager\Service\AssetManager asset manager object
+     * @var AssetManager asset manager object
      */
     protected $assetManager;
 
@@ -39,9 +41,9 @@ class ConsoleController extends AbstractActionController
      */
     public function __construct(Console $console, AssetManager $assetManager, array $appConfig)
     {
-        $this->console      = $console;
+        $this->console = $console;
         $this->assetManager = $assetManager;
-        $this->appConfig    = $appConfig;
+        $this->appConfig = $appConfig;
     }
 
     /**
@@ -49,12 +51,12 @@ class ConsoleController extends AbstractActionController
      * @param RequestInterface $request
      * @param ResponseInterface $response
      * @return mixed|ResponseInterface
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function dispatch(RequestInterface $request, ResponseInterface $response = null)
     {
         if (!($request instanceof ConsoleRequest)) {
-            throw new \RuntimeException('You can use this controller only from a console!');
+            throw new RuntimeException('You can use this controller only from a console!');
         }
 
         return parent::dispatch($request, $response);
@@ -65,9 +67,12 @@ class ConsoleController extends AbstractActionController
      */
     public function warmupAction()
     {
-        $request    = $this->getRequest();
-        $purge      = $request->getParam('purge', false);
-        $verbose    = $request->getParam('verbose', false) || $request->getParam('v', false);
+        $request = $this->getRequest();
+        if (!($request instanceof Request)) {
+            throw new RuntimeException('You can use this controller only from a console!');
+        }
+        $purge = $request->getParam('purge', false);
+        $verbose = $request->getParam('verbose', false) || $request->getParam('v', false);
 
         // purge cache for every configuration
         if ($purge) {
@@ -85,7 +90,7 @@ class ConsoleController extends AbstractActionController
             $this->assetManager->getAssetCacheManager()->setCache($path, $asset)->dump();
         }
 
-        $this->output(sprintf('Warming up finished...', $verbose));
+        $this->output('Warming up finished...', $verbose);
     }
 
     /**
@@ -109,7 +114,7 @@ class ConsoleController extends AbstractActionController
             $node = $config['options']['dir'];
 
             if ($configName !== 'default') {
-                $node .= '/'.$configName;
+                $node .= '/' . $configName;
             }
 
             $this->recursiveRemove($node, $verbose);
@@ -123,7 +128,7 @@ class ConsoleController extends AbstractActionController
      * @param string $node - uri of node that should be removed from filesystem
      * @param bool $verbose verbose flag, default false
      */
-    protected function recursiveRemove($node, $verbose = false)
+    protected function recursiveRemove(string $node, $verbose = false)
     {
         if (is_dir($node)) {
             $objects = scandir($node);
@@ -142,10 +147,10 @@ class ConsoleController extends AbstractActionController
 
     /**
      * Outputs given $line if $verbose i truthy value.
-     * @param $line
+     * @param string $line
      * @param bool $verbose verbose flag, default true
      */
-    protected function output($line, $verbose = true)
+    protected function output(string $line, $verbose = true)
     {
         if ($verbose) {
             $this->console->writeLine($line);

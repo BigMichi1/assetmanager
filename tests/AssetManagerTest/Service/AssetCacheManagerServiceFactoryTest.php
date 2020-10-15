@@ -4,8 +4,8 @@ namespace AssetManagerTest\Service;
 
 use AssetManager\Service\AssetCacheManager;
 use AssetManager\Service\AssetCacheManagerServiceFactory;
-use PHPUnit\Framework\TestCase;
 use Laminas\ServiceManager\ServiceManager;
+use PHPUnit\Framework\TestCase;
 
 class AssetCacheManagerServiceFactoryTest extends TestCase
 {
@@ -25,9 +25,9 @@ class AssetCacheManagerServiceFactoryTest extends TestCase
             )
         );
 
-        $assetManager = new AssetCacheManagerServiceFactory($serviceManager);
+        $serviceFactory = new AssetCacheManagerServiceFactory();
 
-        $service = $assetManager->createService($serviceManager);
+        $service = $serviceFactory($serviceManager, AssetCacheManager::class);
 
         $this->assertTrue($service instanceof AssetCacheManager);
     }

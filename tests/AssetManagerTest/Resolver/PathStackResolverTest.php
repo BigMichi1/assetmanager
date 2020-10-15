@@ -3,14 +3,13 @@
 namespace AssetManagerTest\Resolver;
 
 use ArrayObject;
-use Assetic\Asset;
+use AssetManager\Asset\FileAsset;
 use AssetManager\Exception\InvalidArgumentException;
 use AssetManager\Resolver\MimeResolverAwareInterface;
 use AssetManager\Resolver\PathStackResolver;
 use AssetManager\Resolver\ResolverInterface;
 use AssetManager\Service\MimeResolver;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_Error;
 use stdClass;
 use TypeError;
 
@@ -86,8 +85,8 @@ class PathStackResolverTest extends TestCase
 
         $resolver->addPath(__DIR__);
 
-        $fileAsset = new Asset\FileAsset(__FILE__);
-        $fileAsset->mimetype = $mimeResolver->getMimeType(__FILE__);
+        $fileAsset = new FileAsset(__FILE__);
+        $fileAsset->setMimeType($mimeResolver->getMimeType(__FILE__));
 
         $this->assertEquals($fileAsset, $resolver->resolve(basename(__FILE__)));
         $this->assertNull($resolver->resolve('i-do-not-exist.php'));

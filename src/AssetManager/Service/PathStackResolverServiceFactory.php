@@ -4,8 +4,7 @@ namespace AssetManager\Service;
 
 use AssetManager\Resolver\PathStackResolver;
 use Interop\Container\ContainerInterface;
-use Laminas\ServiceManager\FactoryInterface;
-use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class PathStackResolverServiceFactory implements FactoryInterface
 {
@@ -14,9 +13,9 @@ class PathStackResolverServiceFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $config            = $container->get('config');
+        $config = $container->get('config');
         $pathStackResolver = new PathStackResolver();
-        $paths             = array();
+        $paths = array();
 
         if (isset($config['asset_manager']['resolver_configs']['paths'])) {
             $paths = $config['asset_manager']['resolver_configs']['paths'];
@@ -25,15 +24,5 @@ class PathStackResolverServiceFactory implements FactoryInterface
         $pathStackResolver->addPaths($paths);
 
         return $pathStackResolver;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return PathStackResolver
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator)
-    {
-        return $this($serviceLocator, PathStackResolver::class);
     }
 }

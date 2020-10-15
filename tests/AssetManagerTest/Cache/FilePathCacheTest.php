@@ -42,64 +42,80 @@ class FilePathCacheTest extends TestCase
 
     public function testSetMayNotWriteFile()
     {
-        $this->expectException(RuntimeException::class);
-        restore_error_handler(); // Previous test fails, so doesn't unset.
         $time = time();
-        $sentence = 'I am, what I am. Cached data, please don\'t hate, '
-            . 'for we are all equals. Except you, you\'re a dick.';
-        $base = '/tmp/_cachetest.' . $time . '/';
-        mkdir($base, 0777);
-        mkdir($base . 'readonly', 0400, true);
+        $base = sys_get_temp_dir() . '/_cachetest.' . $time . '/';
+        try {
+            $this->expectException(RuntimeException::class);
+            restore_error_handler(); // Previous test fails, so doesn't unset.
+            $sentence = 'I am, what I am. Cached data, please don\'t hate, '
+                . 'for we are all equals. Except you, you\'re a dick.';
+            mkdir($base, 0777);
+            mkdir($base . 'readonly', 0400, true);
 
-        $cache = new FilePathCache($base . 'readonly', 'bacon.' . $time . '.hammertime');
-        $cache->set('bacon', $sentence);
+            $cache = new FilePathCache($base . 'readonly', 'bacon.' . $time . '.hammertime');
+            $cache->set('bacon', $sentence);
+        } finally {
+            $this->rrmdir($base);
+        }
     }
 
     public function testSetMayNotWriteDir()
     {
-        $this->expectException(RuntimeException::class);
-        restore_error_handler(); // Previous test fails, so doesn't unset.
         $time = time() + 1;
-        $sentence = 'I am, what I am. Cached data, please don\'t hate, '
-            . 'for we are all equals. Except you, you\'re a dick.';
-        $base = '/tmp/_cachetest.' . $time . '/';
-        mkdir($base, 0400, true);
+        $base = sys_get_temp_dir() . '/_cachetest.' . $time . '/';
+        try {
+            $this->expectException(RuntimeException::class);
+            restore_error_handler(); // Previous test fails, so doesn't unset.
+            $sentence = 'I am, what I am. Cached data, please don\'t hate, '
+                . 'for we are all equals. Except you, you\'re a dick.';
+            mkdir($base, 0400, true);
 
-        $cache = new FilePathCache($base . 'readonly', 'bacon.' . $time . '.hammertime');
+            $cache = new FilePathCache($base . 'readonly', 'bacon.' . $time . '.hammertime');
 
-        $cache->set('bacon', $sentence);
+            $cache->set('bacon', $sentence);
+        } finally {
+            $this->rrmdir($base);
+        }
     }
 
     public function testSetCanNotWriteToFileThatExists()
     {
-        $this->expectException(RuntimeException::class);
-        restore_error_handler(); // Previous test fails, so doesn't unset.
         $time = time() + 333;
-        $sentence = 'I am, what I am. Cached data, please don\'t hate, '
-            . 'for we are all equals. Except you, you\'re a dick.';
-        $base = '/tmp/_cachetest.' . $time . '/';
-        mkdir($base, 0777);
+        $base = sys_get_temp_dir() . '/_cachetest.' . $time . '/';
+        try {
+            $this->expectException(RuntimeException::class);
+            restore_error_handler(); // Previous test fails, so doesn't unset.
+            $sentence = 'I am, what I am. Cached data, please don\'t hate, '
+                . 'for we are all equals. Except you, you\'re a dick.';
+            mkdir($base, 0777);
 
-        $fileName = 'sausage.' . $time . '.iceicebaby';
+            $fileName = 'sausage.' . $time . '.iceicebaby';
 
-        touch($base . 'AssetManagerFilePathCache_' . $fileName);
-        chmod($base . 'AssetManagerFilePathCache_' . $fileName, 0400);
+            touch($base . 'AssetManagerFilePathCache_' . $fileName);
+            chmod($base . 'AssetManagerFilePathCache_' . $fileName, 0400);
 
-        $cache = new FilePathCache($base, $fileName);
+            $cache = new FilePathCache($base, $fileName);
 
-        $cache->set('bacon', $sentence);
+            $cache->set('bacon', $sentence);
+        } finally {
+            $this->rrmdir($base);
+        }
     }
 
     public function testSetSuccess()
     {
         $time = time();
-        $sentence = 'I am, what I am. Cached data, please don\'t hate, '
-            . 'for we are all equals. Except you, you\'re a dick.';
-        $base = '/tmp/_cachetest.' . $time . '/';
-        $cache = new FilePathCache($base, 'bacon.' . $time);
+        $base = sys_get_temp_dir() . '/_cachetest.' . $time . '/';
+        try {
+            $sentence = 'I am, what I am. Cached data, please don\'t hate, '
+                . 'for we are all equals. Except you, you\'re a dick.';
+            $cache = new FilePathCache($base, 'bacon.' . $time);
 
-        $cache->set('bacon', $sentence);
-        $this->assertEquals($sentence, file_get_contents($base . 'bacon.' . $time));
+            $cache->set('bacon', $sentence);
+            $this->assertEquals($sentence, file_get_contents($base . 'bacon.' . $time));
+        } finally {
+            $this->rrmdir($base);
+        }
     }
 
     public function testRemoveFails()
@@ -113,14 +129,18 @@ class FilePathCacheTest extends TestCase
     public function testRemoveSuccess()
     {
         $time = time();
-        $sentence = 'I am, what I am. Cached data, please don\'t hate, '
-            . 'for we are all equals. Except you, you\'re a dick.';
-        $base = '/tmp/_cachetest.' . $time . '/';
-        $cache = new FilePathCache($base, 'bacon.' . $time);
+        $base = sys_get_temp_dir() . '/_cachetest.' . $time . '/';
+        try {
+            $sentence = 'I am, what I am. Cached data, please don\'t hate, '
+                . 'for we are all equals. Except you, you\'re a dick.';
+            $cache = new FilePathCache($base, 'bacon.' . $time);
 
-        $cache->set('bacon', $sentence);
+            $cache->set('bacon', $sentence);
 
-        $this->assertTrue($cache->remove('bacon'));
+            $this->assertTrue($cache->remove('bacon'));
+        } finally {
+            $this->rrmdir($base);
+        }
     }
 
     public function testCachedFile()
@@ -133,5 +153,22 @@ class FilePathCacheTest extends TestCase
             '/' . ltrim(__FILE__, '/'),
             $method->invoke(new FilePathCache('', __FILE__))
         );
+    }
+
+    private function rrmdir(string $dir)
+    {
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+            foreach ($objects as $object) {
+                if ($object != "." && $object != "..") {
+                    if (is_dir($dir . DIRECTORY_SEPARATOR . $object) && !is_link($dir . "/" . $object)) {
+                        $this->rrmdir($dir . DIRECTORY_SEPARATOR . $object);
+                    } else {
+                        unlink($dir . DIRECTORY_SEPARATOR . $object);
+                    }
+                }
+            }
+            rmdir($dir);
+        }
     }
 }

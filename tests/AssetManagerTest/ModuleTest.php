@@ -149,8 +149,10 @@ class ModuleTest extends TestCase
         $event->setResponse($response);
         $event->setRequest($request);
 
+        /** @var Response $return */
         $return = $module->onDispatch($event);
 
+        $this->assertInstanceOf(Response::class, $return);
         $this->assertEquals(200, $return->getStatusCode());
     }
 

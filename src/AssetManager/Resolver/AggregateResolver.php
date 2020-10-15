@@ -30,7 +30,6 @@ class AggregateResolver implements ResolverInterface
      *
      * @param  ResolverInterface $resolver
      * @param  int               $priority
-     * @return self
      */
     public function attach(ResolverInterface $resolver, $priority = 1)
     {
@@ -60,10 +59,6 @@ class AggregateResolver implements ResolverInterface
         $collection = array();
 
         foreach ($this->queue as $resolver) {
-            if (!method_exists($resolver, 'collect')) {
-                continue;
-            }
-
             $collection = array_merge($resolver->collect(), $collection);
         }
 

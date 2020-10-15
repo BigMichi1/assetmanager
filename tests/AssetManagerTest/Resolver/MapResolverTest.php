@@ -2,7 +2,8 @@
 
 namespace AssetManagerTest\Resolver;
 
-use Assetic\Asset;
+use AssetManager\Asset\FileAsset;
+use AssetManager\Asset\HttpAsset;
 use AssetManager\Exception\InvalidArgumentException;
 use AssetManager\Resolver\MapResolver;
 use AssetManager\Resolver\MimeResolverAwareInterface;
@@ -72,7 +73,7 @@ class MapResolverTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $resolver = new MapResolver;
-        $resolver->setMap(new stdClass);
+        $resolver->setMap(new stdClass());
     }
 
     public function testGetMap()
@@ -117,8 +118,8 @@ class MapResolverTest extends TestCase
         $asset = $resolver->resolve('bacon');
         $mimetype = $mimeResolver->getMimeType(__FILE__);
 
-        $this->assertTrue($asset instanceof Asset\FileAsset);
-        $this->assertEquals($mimetype, $asset->mimetype);
+        $this->assertTrue($asset instanceof FileAsset);
+        $this->assertEquals($mimetype, $asset->getMimeType());
         $this->assertEquals($asset->dump(), file_get_contents(__FILE__));
     }
 
@@ -144,8 +145,8 @@ class MapResolverTest extends TestCase
 
         $asset = $resolver->resolve('bacon');
 
-        $this->assertTrue($asset instanceof Asset\HttpAsset);
-        $this->assertSame('text/foo', $asset->mimetype);
+        $this->assertTrue($asset instanceof HttpAsset);
+        $this->assertSame('text/foo', $asset->getMimeType());
     }
 
     /**

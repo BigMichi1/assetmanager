@@ -4,8 +4,8 @@ namespace AssetManagerTest\Service;
 
 use AssetManager\Resolver\AliasPathStackResolver;
 use AssetManager\Service\AliasPathStackResolverServiceFactory;
-use PHPUnit\Framework\TestCase;
 use Laminas\ServiceManager\ServiceManager;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Unit Tests the factory for the Alias Path Stack Resolver
@@ -16,6 +16,7 @@ class AliasPathStackResolverServiceFactoryTest extends TestCase
      * Mainly to avoid regressions
      *
      * @covers \AssetManager\Service\AliasPathStackResolverServiceFactory
+     * @throws \ReflectionException
      */
     public function testCreateService()
     {
@@ -37,7 +38,7 @@ class AliasPathStackResolverServiceFactoryTest extends TestCase
         $factory = new AliasPathStackResolverServiceFactory();
 
         /* @var $resolver AliasPathStackResolver */
-        $resolver = $factory->createService($serviceManager);
+        $resolver = $factory($serviceManager, AliasPathStackResolver::class);
 
         $reflectionClass = new \ReflectionClass(AliasPathStackResolver::class);
         $property = $reflectionClass->getProperty('aliases');
@@ -56,6 +57,7 @@ class AliasPathStackResolverServiceFactoryTest extends TestCase
      * Mainly to avoid regressions
      *
      * @covers \AssetManager\Service\AliasPathStackResolverServiceFactory
+     * @throws \ReflectionException
      */
     public function testCreateServiceWithNoConfig()
     {
@@ -64,7 +66,7 @@ class AliasPathStackResolverServiceFactoryTest extends TestCase
 
         $factory = new AliasPathStackResolverServiceFactory();
         /* @var $resolver AliasPathStackResolver */
-        $resolver = $factory->createService($serviceManager);
+        $resolver = $factory($serviceManager, AliasPathStackResolver::class);
 
         $reflectionClass = new \ReflectionClass(AliasPathStackResolver::class);
         $property = $reflectionClass->getProperty('aliases');

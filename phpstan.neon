@@ -1,0 +1,9 @@
+parameters:
+    level: 2
+    paths:
+        - src
+        - tests/AssetManagerTest
+    scanFiles:
+        - tests/_files/CustomFilter.php
+        - tests/_files/InterfaceTestResolver.php
+        - tests/_files/JSMin.inc

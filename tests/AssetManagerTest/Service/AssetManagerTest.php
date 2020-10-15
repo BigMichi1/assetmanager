@@ -2,7 +2,7 @@
 
 namespace AssetManagerTest\Service;
 
-use Assetic\Asset;
+use AssetManager\Asset\FileAsset;
 use AssetManager\Exception\RuntimeException;
 use AssetManager\Resolver\AggregateResolver;
 use AssetManager\Resolver\CollectionResolver;
@@ -48,8 +48,8 @@ class AssetManagerTest extends TestCase
     protected function getResolver($resolveTo = __FILE__)
     {
         $mimeResolver = new MimeResolver;
-        $asset = new Asset\FileAsset($resolveTo);
-        $asset->mimetype = $mimeResolver->getMimeType($resolveTo);
+        $asset = new FileAsset($resolveTo);
+        $asset->setMimeType($mimeResolver->getMimeType($resolveTo));
         $resolver = $this->getMockBuilder(ResolverInterface::class)->getMock();
         $resolver
             ->expects($this->once())
@@ -98,8 +98,8 @@ class AssetManagerTest extends TestCase
     public function testInvalidRequest()
     {
         $mimeResolver = new MimeResolver;
-        $asset = new Asset\FileAsset(__FILE__);
-        $asset->mimetype = $mimeResolver->getMimeType(__FILE__);
+        $asset = new FileAsset(__FILE__);
+        $asset->setMimeType($mimeResolver->getMimeType(__FILE__));
         $resolver = $this->getMockBuilder(ResolverInterface::class)->getMock();
         $resolver
             ->expects($this->any())
@@ -342,8 +342,8 @@ class AssetManagerTest extends TestCase
 
         $assetFilterManager = new AssetFilterManager($config['filters']);
         $assetCacheManager = $this->getAssetCacheManagerMock();
-        $mimeResolver = new MimeResolver;
-        $response = new Response;
+        $mimeResolver = new MimeResolver();
+        $response = new Response();
         $resolver = $this->getResolver(__DIR__ . '/../../_files/require-jquery.js');
         $request = $this->getRequest();
         $assetManager = new AssetManager($resolver, $config);
@@ -418,7 +418,7 @@ class AssetManagerTest extends TestCase
     public function testSetAssetOnResponseNoMimeType()
     {
         $this->expectException(RuntimeException::class);
-        $asset = new Asset\FileAsset(__FILE__);
+        $asset = new FileAsset(__FILE__);
         $resolver = $this->getMockBuilder(ResolverInterface::class)->getMock();
         $resolver
             ->expects($this->once())
@@ -445,7 +445,10 @@ class AssetManagerTest extends TestCase
 
         $request = $this->getRequest();
         $assetManager->resolvesToAsset($request);
-        $response = $assetManager->setAssetOnResponse(new Response);
+        /** @var Response $response */
+        $response = $assetManager->setAssetOnResponse(new Response());
+        $this->assertInstanceOf(Response::class, $response);
+
         $thisFile = file_get_contents(__FILE__);
 
         if (function_exists('mb_strlen')) {
@@ -505,18 +508,6 @@ class AssetManagerTest extends TestCase
         $response = $assetManager->setAssetOnResponse(new Response);
 
         echo $response->getContent();
-    }
-
-    /**
-     * @return string
-     */
-    public function getTmpDir()
-    {
-        $tmp = sys_get_temp_dir() . '/' . uniqid('am');
-
-        mkdir($tmp);
-
-        return $tmp;
     }
 
     /**

@@ -27,5 +27,6 @@ before_script:
   - if [ "$dependencies" = "highest" ]; then composer update --prefer-dist -n; fi;
 
 script:
-  - ./vendor/bin/phpunit
-  - ./vendor/bin/phpcs --standard=PSR2 ./src ./tests/AssetManagerTest
+  - composer test
+  - composer static-analysis
+  - composer code-sniffer

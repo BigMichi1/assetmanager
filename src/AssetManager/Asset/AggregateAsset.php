@@ -3,28 +3,29 @@
 namespace AssetManager\Asset;
 
 use Assetic\Asset\BaseAsset;
-use Assetic\Filter\FilterInterface;
+use Assetic\Contracts\Filter\FilterInterface;
 use AssetManager\Exception;
 
 /**
- * Represents a concatented string asset.
+ * Represents a concatenated string asset.
  */
-class AggregateAsset extends BaseAsset
+class AggregateAsset extends BaseAsset implements AssetWithMimeTypeInterface
 {
     /**
      * @var int Timestamp of last modified date from asset
      */
     private $lastModified;
 
+    /** @var string|null */
     public $mimetype;
 
     /**
      * Constructor.
      *
-     * @param array  $content    The array of assets to be merged
-     * @param array  $filters    Filters for the asset
-     * @param string $sourceRoot The source asset root directory
-     * @param string $sourcePath The source asset path
+     * @param array $content The array of assets to be merged
+     * @param array $filters Filters for the asset
+     * @param string|null $sourceRoot The source asset root directory
+     * @param string|null $sourcePath The source asset path
      */
     public function __construct(array $content = array(), $filters = array(), $sourceRoot = null, $sourcePath = null)
     {
@@ -35,7 +36,7 @@ class AggregateAsset extends BaseAsset
     /**
      * load asset
      *
-     * @param FilterInterface $additionalFilter
+     * @param ?FilterInterface $additionalFilter
      */
     public function load(FilterInterface $additionalFilter = null)
     {
@@ -49,7 +50,7 @@ class AggregateAsset extends BaseAsset
      *
      * @param int $lastModified
      */
-    public function setLastModified($lastModified)
+    public function setLastModified(int $lastModified)
     {
         $this->lastModified = $lastModified;
     }
@@ -67,19 +68,19 @@ class AggregateAsset extends BaseAsset
     /**
      * Loop through assets and merge content
      *
-     * @param string $content
+     * @param array $content
      *
      * @throws Exception\RuntimeException
      */
-    private function processContent($content)
+    private function processContent(array $content)
     {
         $this->mimetype = null;
         foreach ($content as $asset) {
             if (null === $this->mimetype) {
-                $this->mimetype = $asset->mimetype;
+                $this->mimetype = $asset->getMimeType();
             }
 
-            if ($asset->mimetype !== $this->mimetype) {
+            if ($asset->getMimeType() !== $this->mimetype) {
                 throw new Exception\RuntimeException(
                     sprintf(
                         'Asset "%s" doesn\'t have the expected mime-type "%s".',
@@ -99,5 +100,21 @@ class AggregateAsset extends BaseAsset
                 $this->getContent() . $asset->dump()
             );
         }
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getMimetype(): ?string
+    {
+        return $this->mimetype;
+    }
+
+    /**
+     * @param string|null $mimetype
+     */
+    public function setMimetype(?string $mimetype): void
+    {
+        $this->mimetype = $mimetype;
     }
 }

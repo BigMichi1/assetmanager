@@ -2,11 +2,10 @@
 
 namespace AssetManagerTest\Service;
 
-use AssetManager\Resolver\CollectionResolver;
 use AssetManager\Resolver\ConcatResolver;
 use AssetManager\Service\ConcatResolverServiceFactory;
-use PHPUnit\Framework\TestCase;
 use Laminas\ServiceManager\ServiceManager;
+use PHPUnit\Framework\TestCase;
 
 class ConcatResolverServiceFactoryTest extends TestCase
 {
@@ -19,24 +18,24 @@ class ConcatResolverServiceFactoryTest extends TestCase
         $serviceManager->setService(
             'config',
             array(
-                 'asset_manager' => array(
-                     'resolver_configs' => array(
-                         'concat' => array(
-                             'key1' => __FILE__,
-                             'key2' => __FILE__,
-                         ),
-                     ),
-                 ),
+                'asset_manager' => array(
+                    'resolver_configs' => array(
+                        'concat' => array(
+                            'key1' => __FILE__,
+                            'key2' => __FILE__,
+                        ),
+                    ),
+                ),
             )
         );
 
         $factory = new ConcatResolverServiceFactory();
-        /* @var CollectionResolver */
-        $concatResolver = $factory->createService($serviceManager);
+        /* @var ConcatResolver */
+        $concatResolver = $factory($serviceManager, ConcatResolver::class);
         $this->assertSame(
             array(
-                 'key1' => __FILE__,
-                 'key2' => __FILE__,
+                'key1' => __FILE__,
+                'key2' => __FILE__,
             ),
             $concatResolver->getConcats()
         );
@@ -52,7 +51,7 @@ class ConcatResolverServiceFactoryTest extends TestCase
 
         $factory = new ConcatResolverServiceFactory();
         /* @var ConcatResolver */
-        $concatResolver = $factory->createService($serviceManager);
+        $concatResolver = $factory($serviceManager, ConcatResolver::class);
         $this->assertEmpty($concatResolver->getConcats());
     }
 }

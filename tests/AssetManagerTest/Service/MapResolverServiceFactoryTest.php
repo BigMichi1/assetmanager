@@ -4,8 +4,8 @@ namespace AssetManagerTest\Service;
 
 use AssetManager\Resolver\MapResolver;
 use AssetManager\Service\MapResolverServiceFactory;
-use PHPUnit\Framework\TestCase;
 use Laminas\ServiceManager\ServiceManager;
+use PHPUnit\Framework\TestCase;
 
 class MapResolverServiceFactoryTest extends TestCase
 {
@@ -31,7 +31,7 @@ class MapResolverServiceFactoryTest extends TestCase
 
         $factory = new MapResolverServiceFactory();
         /* @var MapResolver */
-        $mapResolver = $factory->createService($serviceManager);
+        $mapResolver = $factory($serviceManager, MapResolver::class);
         $this->assertSame(
             array(
                 'key1' => 'value1',
@@ -51,7 +51,7 @@ class MapResolverServiceFactoryTest extends TestCase
 
         $factory = new MapResolverServiceFactory();
         /* @var MapResolver */
-        $mapResolver = $factory->createService($serviceManager);
+        $mapResolver = $factory($serviceManager, MapResolver::class);
         $this->assertEmpty($mapResolver->getMap());
     }
 }

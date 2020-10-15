@@ -1,6 +1,9 @@
 <?php
-use Assetic\Asset\AssetInterface;
-class CustomFilter implements Assetic\Filter\FilterInterface
+
+use Assetic\Contracts\Asset\AssetInterface;
+use Assetic\Contracts\Filter\FilterInterface;
+
+class CustomFilter implements FilterInterface
 {
     public function filterLoad(AssetInterface $asset)
     {
