@@ -1,5 +1,5 @@
 # AssetManager
-By [Wesley Overdijk](http://blog.spoonx.nl/) and [Marco Pivetta](http://ocramius.github.com/)
+By [Wesley Overdijk](http://blog.spoonx.nl/) and [Marco Pivetta](http://ocramius.github.com/) and [Michael Cramer](https://www.bigmichi1.de)
 
 [![Build Status](https://travis-ci.com/BigMichi1/assetmanager.svg?branch=master)](https://travis-ci.com/github/BigMichi1/assetmanager)
 [![Latest Stable Version](https://poser.pugx.org/bigmichi1/assetmanager/v)](//packagist.org/packages/bigmichi1/assetmanager)
@@ -17,8 +17,8 @@ In a nutshell, this module allows you to package assets with your module working
  1.  Require assetmanager:
 
 ```sh
-./composer.phar require rwoverdijk/assetmanager
-#when asked for a version, type "1.*".
+./composer.phar require bigmichi1/assetmanager
+#when asked for a version, type "2.*".
 ```
 
 ## Usage
@@ -76,7 +76,7 @@ If you're having trouble with the asset manager there are a couple of resources 
 * Join us on gitter [![Gitter chat](https://badges.gitter.im/SpoonX/Dev.png)](https://gitter.im/SpoonX/Dev)
 * The [FAQ wiki page](https://github.com/RWOverdijk/AssetManager/wiki/FAQ), where you'll perhaps find your answer.
 * [RWOverdijk at irc.freenode.net #zftalk.dev or #spoonx](http://webchat.freenode.net/?channels=zftalk.dev%2Czftalk%2Cspoonx&uio=MTE9MTAz8d)
-* [Issue tracker](https://github.com/RWOverdijk/AssetManager/issues). (Please try to not submit unrelated issues).
+* [Issue tracker](https://github.com/BigMichi1/assetmanager/issues). (Please try to not submit unrelated issues).
 
 ## Todo
 The task list has been slimmed down a lot lately. However, there are still a couple of things that should be done.
