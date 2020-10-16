@@ -65,9 +65,6 @@ class PrioritizedPathsResolver implements ResolverInterface, MimeResolverAwareIn
         return $this->mimeResolver;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function addPath($path)
     {
         if (is_string($path)) {
@@ -92,17 +89,11 @@ class PrioritizedPathsResolver implements ResolverInterface, MimeResolverAwareIn
         throw new Exception\InvalidArgumentException('Provided array must contain both keys "priority" and "path"');
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getPaths()
     {
         return $this->paths;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function clearPaths()
     {
         $this->paths = new PriorityQueue();

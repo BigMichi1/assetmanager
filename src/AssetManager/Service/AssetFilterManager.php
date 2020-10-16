@@ -73,13 +73,22 @@ class AssetFilterManager implements MimeResolverAwareInterface
     {
         $config = $this->getConfig();
 
-        if (!empty($config[$path])) {
+        if (isset($config[$path])
+            && is_array($config[$path])
+            && count($config[$path]) > 0
+        ) {
             $filters = $config[$path];
-        } elseif (!empty($config[$asset->getMimeType()])) {
+        } elseif (isset($config[$asset->getMimeType()])
+            && is_array($config[$asset->getMimeType()])
+            && count($config[$asset->getMimeType()]) > 0
+        ) {
             $filters = $config[$asset->getMimeType()];
         } else {
             $extension = $this->getMimeResolver()->getExtension($asset->getMimeType());
-            if (!empty($config[$extension])) {
+            if (isset($config[$extension])
+                && is_array($config[$extension])
+                && count($config[$extension]) > 0
+            ) {
                 $filters = $config[$extension];
             } else {
                 return;
@@ -90,9 +99,9 @@ class AssetFilterManager implements MimeResolverAwareInterface
             if (is_null($filter)) {
                 continue;
             }
-            if (!empty($filter['filter'])) {
+            if (isset($filter['filter'])) {
                 $this->ensureByFilter($asset, $filter['filter']);
-            } elseif (!empty($filter['service'])) {
+            } elseif (isset($filter['service'])) {
                 $this->ensureByService($asset, $filter['service']);
             } else {
                 throw new RuntimeException(

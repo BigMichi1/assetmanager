@@ -7,6 +7,7 @@ use AssetManager\Resolver\MimeResolverAwareInterface;
 use AssetManager\Resolver\PrioritizedPathsResolver;
 use AssetManager\Resolver\ResolverInterface;
 use AssetManager\Service\MimeResolver;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 class PrioritizedPathsResolverTest extends TestCase
@@ -14,12 +15,12 @@ class PrioritizedPathsResolverTest extends TestCase
     public function testConstructor()
     {
         $resolver = new PrioritizedPathsResolver();
-        $this->assertEmpty($resolver->getPaths()->toArray());
+        Assert::assertEmpty($resolver->getPaths()->toArray());
 
         $resolver->addPaths(array(__DIR__));
-        $this->assertEquals(array(__DIR__ . DIRECTORY_SEPARATOR), $resolver->getPaths()->toArray());
-        $this->assertTrue($resolver instanceof MimeResolverAwareInterface);
-        $this->assertTrue($resolver instanceof ResolverInterface);
+        Assert::assertEquals(array(__DIR__ . DIRECTORY_SEPARATOR), $resolver->getPaths()->toArray());
+        Assert::assertTrue($resolver instanceof MimeResolverAwareInterface);
+        Assert::assertTrue($resolver instanceof ResolverInterface);
     }
 
     public function testClearPaths()
@@ -30,10 +31,10 @@ class PrioritizedPathsResolverTest extends TestCase
         $paths = $resolver->getPaths();
 
 
-        $this->assertEquals('someDir' . DIRECTORY_SEPARATOR, $paths->top());
+        Assert::assertEquals('someDir' . DIRECTORY_SEPARATOR, $paths->top());
 
         $resolver->clearPaths();
-        $this->assertEquals(array(), $resolver->getPaths()->toArray());
+        Assert::assertEquals(array(), $resolver->getPaths()->toArray());
     }
 
     public function testSetPaths()
@@ -54,8 +55,8 @@ class PrioritizedPathsResolverTest extends TestCase
             ),
         ));
 
-        $this->assertTrue($resolver->getPaths()->hasPriority(1000));
-        $this->assertTrue($resolver->getPaths()->hasPriority(500));
+        Assert::assertTrue($resolver->getPaths()->hasPriority(1000));
+        Assert::assertTrue($resolver->getPaths()->hasPriority(500));
 
         $fetched = array();
 
@@ -64,7 +65,7 @@ class PrioritizedPathsResolverTest extends TestCase
         }
 
         // order inverted because of how a stack is traversed
-        $this->assertSame(
+        Assert::assertSame(
             array('dir2' . DIRECTORY_SEPARATOR, 'dir3' . DIRECTORY_SEPARATOR, 'dir1' . DIRECTORY_SEPARATOR),
             $fetched
         );
@@ -106,7 +107,7 @@ class PrioritizedPathsResolverTest extends TestCase
         }
 
         // order inverted because of how a stack is traversed
-        $this->assertSame(
+        Assert::assertSame(
             array(
                 'dir2' . DIRECTORY_SEPARATOR,
                 'dir3' . DIRECTORY_SEPARATOR,
@@ -146,7 +147,7 @@ class PrioritizedPathsResolverTest extends TestCase
         }
 
         // order inverted because of how a stack is traversed
-        $this->assertSame(
+        Assert::assertSame(
             array(
                 'dir2' . DIRECTORY_SEPARATOR,
                 'dir3' . DIRECTORY_SEPARATOR,
@@ -164,10 +165,10 @@ class PrioritizedPathsResolverTest extends TestCase
         $resolver->setPaths(array('dir1', 'dir2', 'dir3'));
 
         $paths = $resolver->getPaths()->toArray();
-        $this->assertCount(3, $paths);
-        $this->assertContains('dir1' . DIRECTORY_SEPARATOR, $paths);
-        $this->assertContains('dir2' . DIRECTORY_SEPARATOR, $paths);
-        $this->assertContains('dir3' . DIRECTORY_SEPARATOR, $paths);
+        Assert::assertCount(3, $paths);
+        Assert::assertContains('dir1' . DIRECTORY_SEPARATOR, $paths);
+        Assert::assertContains('dir2' . DIRECTORY_SEPARATOR, $paths);
+        Assert::assertContains('dir3' . DIRECTORY_SEPARATOR, $paths);
     }
 
     public function testWillValidateGivenPathArray()
@@ -183,8 +184,8 @@ class PrioritizedPathsResolverTest extends TestCase
         $resolver->setMimeResolver(new MimeResolver);
         $resolver->addPath(__DIR__);
 
-        $this->assertEquals(file_get_contents(__FILE__), $resolver->resolve(basename(__FILE__))->dump());
-        $this->assertNull($resolver->resolve('i-do-not-exist.php'));
+        Assert::assertEquals(file_get_contents(__FILE__), $resolver->resolve(basename(__FILE__))->dump());
+        Assert::assertNull($resolver->resolve('i-do-not-exist.php'));
     }
 
     public function testWillNotResolveDirectories()
@@ -192,7 +193,7 @@ class PrioritizedPathsResolverTest extends TestCase
         $resolver = new PrioritizedPathsResolver();
         $resolver->addPath(__DIR__ . '/..');
 
-        $this->assertNull($resolver->resolve(basename(__DIR__)));
+        Assert::assertNull($resolver->resolve(basename(__DIR__)));
     }
 
     public function testLfiProtection()
@@ -200,16 +201,16 @@ class PrioritizedPathsResolverTest extends TestCase
         $resolver = new PrioritizedPathsResolver();
         $resolver->setMimeResolver(new MimeResolver);
         // should be on by default
-        $this->assertTrue($resolver->isLfiProtectionOn());
+        Assert::assertTrue($resolver->isLfiProtectionOn());
         $resolver->addPath(__DIR__);
 
-        $this->assertNull($resolver->resolve(
+        Assert::assertNull($resolver->resolve(
             '..' . DIRECTORY_SEPARATOR . basename(__DIR__) . DIRECTORY_SEPARATOR . basename(__FILE__)
         ));
 
         $resolver->setLfiProtection(false);
 
-        $this->assertSame(
+        Assert::assertSame(
             file_get_contents(__FILE__),
             $resolver->resolve(
                 '..' . DIRECTORY_SEPARATOR . basename(__DIR__) . DIRECTORY_SEPARATOR . basename(__FILE__)
@@ -234,8 +235,8 @@ class PrioritizedPathsResolverTest extends TestCase
         $resolver = new PrioritizedPathsResolver();
         $resolver->addPath(__DIR__);
 
-        $this->assertContains(basename(__FILE__), $resolver->collect());
-        $this->assertNotContains('i-do-not-exist.php', $resolver->collect());
+        Assert::assertContains(basename(__FILE__), $resolver->collect());
+        Assert::assertNotContains('i-do-not-exist.php', $resolver->collect());
     }
 
     /**
@@ -249,7 +250,7 @@ class PrioritizedPathsResolverTest extends TestCase
         $resolver->addPath(realpath(__DIR__ . '/../'));
         $dir = substr(__DIR__, strrpos(__DIR__, '/', 0) + 1);
 
-        $this->assertContains($dir . DIRECTORY_SEPARATOR . basename(__FILE__), $resolver->collect());
-        $this->assertNotContains($dir . DIRECTORY_SEPARATOR . 'i-do-not-exist.php', $resolver->collect());
+        Assert::assertContains($dir . DIRECTORY_SEPARATOR . basename(__FILE__), $resolver->collect());
+        Assert::assertNotContains($dir . DIRECTORY_SEPARATOR . 'i-do-not-exist.php', $resolver->collect());
     }
 }

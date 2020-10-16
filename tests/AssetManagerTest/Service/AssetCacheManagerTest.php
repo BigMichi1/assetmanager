@@ -2,14 +2,17 @@
 
 namespace AssetManagerTest\Service;
 
-use Assetic\Cache\CacheInterface;
 use Assetic\Cache\FilesystemCache;
+use Assetic\Contracts\Cache\CacheInterface;
 use AssetManager\Asset\AssetCache;
 use AssetManager\Asset\FileAsset;
 use AssetManager\Cache\FilePathCache;
 use AssetManager\Service\AssetCacheManager;
 use Laminas\ServiceManager\ServiceManager;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
+use ReflectionProperty;
 
 /**
  * Test file for the Asset Cache Manager
@@ -41,8 +44,8 @@ class AssetCacheManagerTest extends TestCase
         $assetManager = new AssetCacheManager($serviceManager, $config);
         $assetCache = $assetManager->setCache('my/path', $mockAsset);
 
-        $this->assertTrue($assetCache instanceof AssetCache);
-        $this->assertEquals($mockAsset->getMimeType(), $assetCache->getMimeType());
+        Assert::assertTrue($assetCache instanceof AssetCache);
+        Assert::assertEquals($mockAsset->getMimeType(), $assetCache->getMimeType());
     }
 
     /**
@@ -67,7 +70,7 @@ class AssetCacheManagerTest extends TestCase
         $assetManager = new AssetCacheManager($serviceManager, $config);
         $assetCache = $assetManager->setCache('not/defined', $mockAsset);
 
-        $this->assertFalse($assetCache instanceof AssetCache);
+        Assert::assertFalse($assetCache instanceof AssetCache);
     }
 
     /**
@@ -84,7 +87,7 @@ class AssetCacheManagerTest extends TestCase
         );
 
         $assetManager = new AssetCacheManager($serviceManager, $config);
-        $reflectionMethod = new \ReflectionMethod(
+        $reflectionMethod = new ReflectionMethod(
             AssetCacheManager::class,
             'getProvider'
         );
@@ -92,7 +95,7 @@ class AssetCacheManagerTest extends TestCase
 
         $provider = $reflectionMethod->invoke($assetManager, 'my/path');
 
-        $this->assertTrue($provider instanceof CacheInterface);
+        Assert::assertTrue($provider instanceof CacheInterface);
     }
 
     /**
@@ -108,7 +111,7 @@ class AssetCacheManagerTest extends TestCase
         );
 
         $assetManager = new AssetCacheManager($serviceManager, $config);
-        $reflectionMethod = new \ReflectionMethod(
+        $reflectionMethod = new ReflectionMethod(
             AssetCacheManager::class,
             'getProvider'
         );
@@ -116,7 +119,7 @@ class AssetCacheManagerTest extends TestCase
 
         $provider = $reflectionMethod->invoke($assetManager, 'no/path');
 
-        $this->assertTrue($provider instanceof CacheInterface);
+        Assert::assertTrue($provider instanceof CacheInterface);
     }
 
     /**
@@ -134,13 +137,13 @@ class AssetCacheManagerTest extends TestCase
 
         $serviceManager->setFactory(
             'myZf2Service',
-            function () {
+            function (): FilePathCache {
                 return new FilePathCache('somewhere', 'somfile');
             }
         );
 
         $assetManager = new AssetCacheManager($serviceManager, $config);
-        $reflectionMethod = new \ReflectionMethod(
+        $reflectionMethod = new ReflectionMethod(
             AssetCacheManager::class,
             'getProvider'
         );
@@ -148,7 +151,7 @@ class AssetCacheManagerTest extends TestCase
 
         $provider = $reflectionMethod->invoke($assetManager, 'no/path');
 
-        $this->assertTrue($provider instanceof FilePathCache);
+        Assert::assertTrue($provider instanceof FilePathCache);
     }
 
     /**
@@ -169,13 +172,13 @@ class AssetCacheManagerTest extends TestCase
 
         $serviceManager->setFactory(
             'myZf2Service',
-            function () {
+            function (): FilePathCache {
                 return new FilePathCache('somewhere', 'somfile');
             }
         );
 
         $assetManager = new AssetCacheManager($serviceManager, $config);
-        $reflectionMethod = new \ReflectionMethod(
+        $reflectionMethod = new ReflectionMethod(
             AssetCacheManager::class,
             'getProvider'
         );
@@ -183,12 +186,12 @@ class AssetCacheManagerTest extends TestCase
 
         /** @var FilePathCache $provider */
         $provider = $reflectionMethod->invoke($assetManager, 'my_provided_class.tmp');
-        $this->assertTrue($provider instanceof FilePathCache);
+        Assert::assertTrue($provider instanceof FilePathCache);
 
-        $reflectionProperty = new \ReflectionProperty(FilePathCache::class, 'dir');
+        $reflectionProperty = new ReflectionProperty(FilePathCache::class, 'dir');
         $reflectionProperty->setAccessible(true);
 
-        $this->assertTrue($reflectionProperty->getValue($provider) == 'somewhere');
+        Assert::assertTrue($reflectionProperty->getValue($provider) == 'somewhere');
     }
 
     /**
@@ -203,7 +206,7 @@ class AssetCacheManagerTest extends TestCase
             ),
 
             'my_callback.tmp' => array(
-                'cache' => function () {
+                'cache' => function (): FilePathCache {
                     return new FilePathCache('somewhere', 'somefile');
                 },
             ),
@@ -218,27 +221,27 @@ class AssetCacheManagerTest extends TestCase
 
         $serviceManager->setFactory(
             'myZf2Service',
-            function () {
+            function (): FilePathCache {
                 return new FilePathCache('somewhere', 'somfile');
             }
         );
 
         $assetManager = new AssetCacheManager($serviceManager, $config);
 
-        $reflectionMethod = new \ReflectionMethod(
+        $reflectionMethod = new ReflectionMethod(
             AssetCacheManager::class,
             'getProvider'
         );
         $reflectionMethod->setAccessible(true);
 
         $provider = $reflectionMethod->invoke($assetManager, 'no/path');
-        $this->assertTrue($provider instanceof FilePathCache);
+        Assert::assertTrue($provider instanceof FilePathCache);
 
         $provider = $reflectionMethod->invoke($assetManager, 'my_callback.tmp');
-        $this->assertTrue($provider instanceof FilePathCache);
+        Assert::assertTrue($provider instanceof FilePathCache);
 
         $provider = $reflectionMethod->invoke($assetManager, 'my_provided_class.tmp');
-        $this->assertTrue($provider instanceof FilePathCache);
+        Assert::assertTrue($provider instanceof FilePathCache);
     }
 
     /**
@@ -249,14 +252,14 @@ class AssetCacheManagerTest extends TestCase
         $serviceManager = new ServiceManager();
 
         $assetManager = new AssetCacheManager($serviceManager, array());
-        $reflectionMethod = new \ReflectionMethod(
+        $reflectionMethod = new ReflectionMethod(
             AssetCacheManager::class,
             'getProvider'
         );
         $reflectionMethod->setAccessible(true);
 
         $provider = $reflectionMethod->invoke($assetManager, 'no/path');
-        $this->assertNull($provider);
+        Assert::assertNull($provider);
     }
 
     /**
@@ -277,14 +280,14 @@ class AssetCacheManagerTest extends TestCase
         );
 
         $assetManager = new AssetCacheManager($serviceManager, $config);
-        $reflectionMethod = new \ReflectionMethod(
+        $reflectionMethod = new ReflectionMethod(
             AssetCacheManager::class,
             'getCacheProviderConfig'
         );
         $reflectionMethod->setAccessible(true);
 
         $providerConfig = $reflectionMethod->invoke($assetManager, 'my_provided_class.tmp');
-        $this->assertEquals($expected, $providerConfig);
+        Assert::assertEquals($expected, $providerConfig);
     }
 
     /**
@@ -308,14 +311,14 @@ class AssetCacheManagerTest extends TestCase
         );
 
         $assetManager = new AssetCacheManager($serviceManager, $config);
-        $reflectionMethod = new \ReflectionMethod(
+        $reflectionMethod = new ReflectionMethod(
             AssetCacheManager::class,
             'getCacheProviderConfig'
         );
         $reflectionMethod->setAccessible(true);
 
         $providerConfig = $reflectionMethod->invoke($assetManager, 'my_provided_class.tmp');
-        $this->assertEquals($expected, $providerConfig);
+        Assert::assertEquals($expected, $providerConfig);
     }
 
     /**
@@ -326,14 +329,14 @@ class AssetCacheManagerTest extends TestCase
         $serviceManager = new ServiceManager();
 
         $assetManager = new AssetCacheManager($serviceManager, array());
-        $reflectionMethod = new \ReflectionMethod(
+        $reflectionMethod = new ReflectionMethod(
             AssetCacheManager::class,
             'classMapper'
         );
         $reflectionMethod->setAccessible(true);
 
         $class = $reflectionMethod->invoke($assetManager, 'FilesystemCache');
-        $this->assertEquals(FilesystemCache::class, $class);
+        Assert::assertEquals(FilesystemCache::class, $class);
     }
 
     /**
@@ -345,14 +348,14 @@ class AssetCacheManagerTest extends TestCase
 
         $assetManager = new AssetCacheManager($serviceManager, array());
 
-        $reflectionMethod = new \ReflectionMethod(
+        $reflectionMethod = new ReflectionMethod(
             AssetCacheManager::class,
             'classMapper'
         );
         $reflectionMethod->setAccessible(true);
 
         $class = $reflectionMethod->invoke($assetManager, 'FilePathCache');
-        $this->assertEquals(FilePathCache::class, $class);
+        Assert::assertEquals(FilePathCache::class, $class);
     }
 
     /**
@@ -364,13 +367,13 @@ class AssetCacheManagerTest extends TestCase
 
 
         $assetManager = new AssetCacheManager($serviceManager, array());
-        $reflectionMethod = new \ReflectionMethod(
+        $reflectionMethod = new ReflectionMethod(
             AssetCacheManager::class,
             'classMapper'
         );
         $reflectionMethod->setAccessible(true);
 
         $class = $reflectionMethod->invoke($assetManager, 'FilePath');
-        $this->assertEquals(FilePathCache::class, $class);
+        Assert::assertEquals(FilePathCache::class, $class);
     }
 }

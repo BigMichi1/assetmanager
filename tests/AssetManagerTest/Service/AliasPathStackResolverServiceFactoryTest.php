@@ -5,6 +5,7 @@ namespace AssetManagerTest\Service;
 use AssetManager\Resolver\AliasPathStackResolver;
 use AssetManager\Service\AliasPathStackResolverServiceFactory;
 use Laminas\ServiceManager\ServiceManager;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -44,7 +45,7 @@ class AliasPathStackResolverServiceFactoryTest extends TestCase
         $property = $reflectionClass->getProperty('aliases');
         $property->setAccessible(true);
 
-        $this->assertSame(
+        Assert::assertSame(
             array(
                 'alias1/' => 'path1' . DIRECTORY_SEPARATOR,
                 'alias2/' => 'path2' . DIRECTORY_SEPARATOR,
@@ -72,6 +73,6 @@ class AliasPathStackResolverServiceFactoryTest extends TestCase
         $property = $reflectionClass->getProperty('aliases');
         $property->setAccessible(true);
 
-        $this->assertEmpty($property->getValue($resolver));
+        Assert::assertEmpty($property->getValue($resolver));
     }
 }

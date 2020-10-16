@@ -7,6 +7,14 @@ build:
             tests:
                 override:
                     - php-scrutinizer-run
+        coverage:
+            tests:
+                override:
+                    - command: composer test
+                      coverage:
+                          file: clover.xml
+                          format: clover
+
 checks:
     php: true
 

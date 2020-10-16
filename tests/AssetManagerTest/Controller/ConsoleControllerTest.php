@@ -15,6 +15,7 @@ use Laminas\Console\Request as ConsoleRequest;
 use Laminas\Mvc\MvcEvent;
 use Laminas\Router\RouteMatch;
 use Laminas\ServiceManager\ServiceLocatorInterface;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 class ConsoleControllerTest extends TestCase
@@ -112,7 +113,7 @@ class ConsoleControllerTest extends TestCase
         $this->controller->dispatch($this->request);
 
         $dumpedAsset = sys_get_temp_dir() . '/' . self::$assetName;
-        $this->assertEquals(
+        Assert::assertEquals(
             file_get_contents($dumpedAsset),
             JSMin::minify(file_get_contents(__DIR__ . '/../../_files/require-jquery.js'))
         );

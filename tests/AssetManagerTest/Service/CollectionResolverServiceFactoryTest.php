@@ -5,6 +5,7 @@ namespace AssetManagerTest\Service;
 use AssetManager\Resolver\CollectionResolver;
 use AssetManager\Service\CollectionResolverServiceFactory;
 use Laminas\ServiceManager\ServiceManager;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 class CollectionResolverServiceFactoryTest extends TestCase
@@ -32,7 +33,7 @@ class CollectionResolverServiceFactoryTest extends TestCase
         $factory = new CollectionResolverServiceFactory();
         /* @var CollectionResolver */
         $collectionsResolver = $factory($serviceManager, CollectionResolver::class);
-        $this->assertSame(
+        Assert::assertSame(
             array(
                 'key1' => 'value1',
                 'key2' => 'value2',
@@ -52,6 +53,6 @@ class CollectionResolverServiceFactoryTest extends TestCase
         $factory = new CollectionResolverServiceFactory();
         /* @var CollectionResolver */
         $collectionsResolver = $factory($serviceManager, CollectionResolver::class);
-        $this->assertEmpty($collectionsResolver->getCollections());
+        Assert::assertEmpty($collectionsResolver->getCollections());
     }
 }

@@ -9,6 +9,7 @@ use AssetManager\Service\AssetFilterManager;
 use AssetManager\Service\AssetManager;
 use AssetManager\Service\AssetManagerServiceFactory;
 use Laminas\ServiceManager\ServiceManager;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 class AssetManagerServiceFactoryTest extends TestCase
@@ -46,6 +47,6 @@ class AssetManagerServiceFactoryTest extends TestCase
         ));
 
         $factory = new AssetManagerServiceFactory();
-        $this->assertInstanceOf(AssetManager::class, $factory($serviceManager, AssetManager::class));
+        Assert::assertInstanceOf(AssetManager::class, $factory($serviceManager, AssetManager::class));
     }
 }

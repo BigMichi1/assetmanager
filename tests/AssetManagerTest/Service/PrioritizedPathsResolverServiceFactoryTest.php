@@ -5,6 +5,7 @@ namespace AssetManagerTest\Service;
 use AssetManager\Resolver\PrioritizedPathsResolver;
 use AssetManager\Service\PrioritizedPathsResolverServiceFactory;
 use Laminas\ServiceManager\ServiceManager;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 class PrioritizedPathsResolverServiceFactoryTest extends TestCase
@@ -49,7 +50,7 @@ class PrioritizedPathsResolverServiceFactoryTest extends TestCase
             $fetched[] = $path;
         }
 
-        $this->assertSame(
+        Assert::assertSame(
             array('dir2' . DIRECTORY_SEPARATOR, 'dir3' . DIRECTORY_SEPARATOR, 'dir1' . DIRECTORY_SEPARATOR),
             $fetched
         );
@@ -66,6 +67,6 @@ class PrioritizedPathsResolverServiceFactoryTest extends TestCase
         $factory = new PrioritizedPathsResolverServiceFactory();
         /* @var $resolver PrioritizedPathsResolver */
         $resolver = $factory($serviceManager, PrioritizedPathsResolver::class);
-        $this->assertEmpty($resolver->getPaths()->toArray());
+        Assert::assertEmpty($resolver->getPaths()->toArray());
     }
 }

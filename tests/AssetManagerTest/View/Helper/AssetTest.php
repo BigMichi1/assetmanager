@@ -6,6 +6,7 @@ use AssetManager\Resolver\MapResolver;
 use AssetManager\Resolver\MimeResolverAwareInterface;
 use AssetManager\Service\MimeResolver;
 use AssetManager\View\Helper\Asset;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 class AssetTest extends TestCase
@@ -14,7 +15,7 @@ class AssetTest extends TestCase
     {
         $resolver = new MapResolver;
 
-        $this->assertTrue($resolver instanceof MimeResolverAwareInterface);
+        Assert::assertTrue($resolver instanceof MimeResolverAwareInterface);
 
         $mimeResolver = new MimeResolver;
 
@@ -61,16 +62,16 @@ class AssetTest extends TestCase
         $newFilenameWithCache = $helperWithCache->__invoke($filename);
 
         // with cache file should have a timestamp query param
-        $this->assertStringContainsString('?_=', $newFilenameWithCache);
+        Assert::assertStringContainsString('?_=', $newFilenameWithCache);
 
         $helperWithoutCache = new Asset($resolver, null, $configWithoutCache);
         $newFilenameWithoutCache = $helperWithoutCache->__invoke($filename);
 
         // without cache file should have a timestamp query param
-        $this->assertStringContainsString('?_=', $newFilenameWithoutCache);
+        Assert::assertStringContainsString('?_=', $newFilenameWithoutCache);
 
         // without cache the timestamp query param should be different than with cache
-        $this->assertNotSame($newFilenameWithCache, $newFilenameWithoutCache);
+        Assert::assertNotSame($newFilenameWithCache, $newFilenameWithoutCache);
     }
 
     public function testSameResultWithoutCachingConfig()
@@ -94,8 +95,8 @@ class AssetTest extends TestCase
         $helper = new Asset($resolver, null, $config);
         $newFilename = $helper->__invoke($filename);
 
-        $this->assertStringContainsString('?_=', $newFilename);
-        $this->assertNotSame($newFilename, $filename);
+        Assert::assertStringContainsString('?_=', $newFilename);
+        Assert::assertNotSame($newFilename, $filename);
     }
 
     public function testForceToNotAppendTimestampWithoutCache()
@@ -119,7 +120,7 @@ class AssetTest extends TestCase
         $helper = new Asset($resolver, null, $config);
         $newFilename = $helper->__invoke($filename);
 
-        $this->assertStringNotContainsString('?_=', $newFilename);
-        $this->assertSame($newFilename, $filename);
+        Assert::assertStringNotContainsString('?_=', $newFilename);
+        Assert::assertSame($newFilename, $filename);
     }
 }

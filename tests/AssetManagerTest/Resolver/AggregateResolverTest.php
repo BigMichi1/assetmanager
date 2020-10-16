@@ -4,6 +4,7 @@ namespace AssetManagerTest\Resolver;
 
 use AssetManager\Resolver\AggregateResolver;
 use AssetManager\Resolver\ResolverInterface;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 class AggregateResolverTest extends TestCase
@@ -12,42 +13,42 @@ class AggregateResolverTest extends TestCase
     {
         $resolver = new AggregateResolver();
 
-        $this->assertTrue($resolver instanceof ResolverInterface);
+        Assert::assertTrue($resolver instanceof ResolverInterface);
 
         $lowPriority = $this
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
         $lowPriority
-            ->expects($this->once())
+            ->expects(TestCase::once())
             ->method('resolve')
             ->with('to-be-resolved')
-            ->will($this->returnValue('first'));
+            ->will(TestCase::returnValue('first'));
         $resolver->attach($lowPriority);
 
-        $this->assertSame('first', $resolver->resolve('to-be-resolved'));
+        Assert::assertSame('first', $resolver->resolve('to-be-resolved'));
 
         $highPriority = $this
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
         $highPriority
-            ->expects($this->exactly(2))
+            ->expects(TestCase::exactly(2))
             ->method('resolve')
             ->with('to-be-resolved')
-            ->will($this->returnValue('second'));
+            ->will(TestCase::returnValue('second'));
         $resolver->attach($highPriority, 1000);
 
-        $this->assertSame('second', $resolver->resolve('to-be-resolved'));
+        Assert::assertSame('second', $resolver->resolve('to-be-resolved'));
 
         $averagePriority = $this
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
         $averagePriority
-            ->expects($this->never())
+            ->expects(TestCase::never())
             ->method('resolve')
-            ->will($this->returnValue('third'));
+            ->will(TestCase::returnValue('third'));
         $resolver->attach($averagePriority, 500);
 
-        $this->assertSame('second', $resolver->resolve('to-be-resolved'));
+        Assert::assertSame('second', $resolver->resolve('to-be-resolved'));
     }
 
     public function testCollectWithCollectMethod()
@@ -57,27 +58,27 @@ class AggregateResolverTest extends TestCase
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
         $lowPriority
-            ->expects($this->exactly(2))
+            ->expects(TestCase::exactly(2))
             ->method('collect')
-            ->will($this->returnValue(array('one', 'two')));
+            ->will(TestCase::returnValue(array('one', 'two')));
         $resolver->attach($lowPriority);
 
-        $this->assertContains('one', $resolver->collect());
+        Assert::assertContains('one', $resolver->collect());
 
         $highPriority = $this
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
         $highPriority
-            ->expects($this->once())
+            ->expects(TestCase::once())
             ->method('collect')
-            ->will($this->returnValue(array('three')));
+            ->will(TestCase::returnValue(array('three')));
         $resolver->attach($highPriority, 1000);
 
         $collection = $resolver->collect();
-        $this->assertContains('one', $collection);
-        $this->assertContains('three', $collection);
+        Assert::assertContains('one', $collection);
+        Assert::assertContains('three', $collection);
 
-        $this->assertCount(3, $collection);
+        Assert::assertCount(3, $collection);
     }
 
     public function testCollectWithoutCollectMethod()
@@ -87,26 +88,26 @@ class AggregateResolverTest extends TestCase
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
         $lowPriority
-            ->expects($this->exactly(2))
+            ->expects(TestCase::exactly(2))
             ->method('collect')
-            ->will($this->returnValue([]));
+            ->will(TestCase::returnValue([]));
 
         $resolver->attach($lowPriority);
 
-        $this->assertEquals(array(), $resolver->collect());
+        Assert::assertEquals(array(), $resolver->collect());
 
         $highPriority = $this
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
         $highPriority
-            ->expects($this->exactly(1))
+            ->expects(TestCase::exactly(1))
             ->method('collect')
-            ->will($this->returnValue([]));
+            ->will(TestCase::returnValue([]));
         $resolver->attach($highPriority, 1000);
 
         $collection = $resolver->collect();
-        $this->assertEquals(array(), $collection);
+        Assert::assertEquals(array(), $collection);
 
-        $this->assertCount(0, $collection);
+        Assert::assertCount(0, $collection);
     }
 }

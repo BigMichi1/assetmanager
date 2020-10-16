@@ -2,7 +2,7 @@
 
 namespace AssetManager\Cache;
 
-use Assetic\Cache\CacheInterface;
+use Assetic\Contracts\Cache\CacheInterface;
 use AssetManager\Exception\RuntimeException;
 use Laminas\Stdlib\ErrorHandler;
 
@@ -66,7 +66,7 @@ class FilePathCache implements CacheInterface
      */
     public function set($key, $value)
     {
-        $pathInfo = pathInfo($this->cachedFile());
+        $pathInfo = pathinfo($this->cachedFile());
         $cacheDir = $pathInfo['dirname'];
         $fileName = $pathInfo['basename'];
 

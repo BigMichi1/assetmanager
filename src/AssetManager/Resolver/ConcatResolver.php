@@ -2,7 +2,7 @@
 
 namespace AssetManager\Resolver;
 
-use Assetic\Asset\AssetInterface;
+use Assetic\Contracts\Asset\AssetInterface;
 use AssetManager\Asset\AggregateAsset;
 use AssetManager\Exception;
 use AssetManager\Service\AssetFilterManager;

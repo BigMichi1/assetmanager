@@ -2,7 +2,7 @@
 
 namespace AssetManager\Service;
 
-use Assetic\Asset\AssetInterface;
+use Assetic\Contracts\Asset\AssetInterface;
 use AssetManager\Asset\AssetWithMimeTypeInterface;
 use AssetManager\Exception;
 use AssetManager\Resolver\ResolverInterface;
@@ -35,7 +35,7 @@ class AssetManager implements
     protected $cacheManager;
 
     /**
-     * @var AssetWithMimeTypeInterface The asset
+     * @var AssetWithMimeTypeInterface|bool The asset
      */
     protected $asset;
 
@@ -59,10 +59,8 @@ class AssetManager implements
      *
      * @param ResolverInterface $resolver
      * @param array $config
-     *
-     * @return AssetManager
      */
-    public function __construct($resolver, $config = array())
+    public function __construct(ResolverInterface $resolver, $config = [])
     {
         $this->setResolver($resolver);
         $this->setConfig($config);
@@ -73,7 +71,7 @@ class AssetManager implements
      *
      * @param array $config
      */
-    protected function setConfig(array $config)
+    protected function setConfig(array $config): void
     {
         $this->config = $config;
     }
@@ -82,9 +80,9 @@ class AssetManager implements
      * Check if the request resolves to an asset.
      *
      * @param RequestInterface $request
-     * @return   boolean
+     * @return bool
      */
-    public function resolvesToAsset(RequestInterface $request)
+    public function resolvesToAsset(RequestInterface $request): bool
     {
         if (null === $this->asset) {
             $this->asset = $this->resolve($request);
@@ -98,7 +96,7 @@ class AssetManager implements
      *
      * @return bool
      */
-    public function assetSetOnResponse()
+    public function assetSetOnResponse(): bool
     {
         return $this->assetSetOnResponse;
     }
@@ -108,7 +106,7 @@ class AssetManager implements
      *
      * @param ResolverInterface $resolver
      */
-    public function setResolver(ResolverInterface $resolver)
+    public function setResolver(ResolverInterface $resolver): void
     {
         $this->resolver = $resolver;
     }
@@ -118,7 +116,7 @@ class AssetManager implements
      *
      * @return ResolverInterface
      */
-    public function getResolver()
+    public function getResolver(): ResolverInterface
     {
         return $this->resolver;
     }
@@ -127,10 +125,10 @@ class AssetManager implements
      * Set the asset on the response, including headers and content.
      *
      * @param ResponseInterface $response
-     * @return   ResponseInterface
-     * @throws   Exception\RuntimeException
+     * @return ResponseInterface
+     * @throws Exception\RuntimeException
      */
-    public function setAssetOnResponse(ResponseInterface $response)
+    public function setAssetOnResponse(ResponseInterface $response): ResponseInterface
     {
         if (!$this->asset instanceof AssetInterface) {
             throw new Exception\RuntimeException(
@@ -138,7 +136,7 @@ class AssetManager implements
             );
         }
 
-        if (empty($this->asset->getMimeType())) {
+        if ($this->asset->getMimeType() === null) {
             throw new Exception\RuntimeException('Expected property "mimetype" on asset.');
         }
 
@@ -156,7 +154,9 @@ class AssetManager implements
         }
         // @codeCoverageIgnoreEnd
 
-        if (!empty($this->config['clear_output_buffer']) && $this->config['clear_output_buffer']) {
+        if (isset($this->config['clear_output_buffer'])
+            && $this->config['clear_output_buffer']
+        ) {
             // Only clean the output buffer if it's turned on and something
             // has been buffered.
             if (ob_get_length() > 0) {
@@ -191,8 +191,6 @@ class AssetManager implements
             return false;
         }
 
-        /* @var $request Request */
-        /* @var $uri \Laminas\Uri\UriInterface */
         $uri = $request->getUri();
         $fullPath = $uri->getPath();
         $path = substr($fullPath, strlen($request->getBasePath()) + 1);

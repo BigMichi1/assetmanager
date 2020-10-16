@@ -5,6 +5,7 @@ namespace AssetManagerTest\Service;
 use AssetManager\Resolver\ConcatResolver;
 use AssetManager\Service\ConcatResolverServiceFactory;
 use Laminas\ServiceManager\ServiceManager;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 class ConcatResolverServiceFactoryTest extends TestCase
@@ -32,7 +33,7 @@ class ConcatResolverServiceFactoryTest extends TestCase
         $factory = new ConcatResolverServiceFactory();
         /* @var ConcatResolver */
         $concatResolver = $factory($serviceManager, ConcatResolver::class);
-        $this->assertSame(
+        Assert::assertSame(
             array(
                 'key1' => __FILE__,
                 'key2' => __FILE__,
@@ -52,6 +53,6 @@ class ConcatResolverServiceFactoryTest extends TestCase
         $factory = new ConcatResolverServiceFactory();
         /* @var ConcatResolver */
         $concatResolver = $factory($serviceManager, ConcatResolver::class);
-        $this->assertEmpty($concatResolver->getConcats());
+        Assert::assertEmpty($concatResolver->getConcats());
     }
 }

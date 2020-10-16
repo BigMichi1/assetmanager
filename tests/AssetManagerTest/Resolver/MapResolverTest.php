@@ -9,6 +9,7 @@ use AssetManager\Resolver\MapResolver;
 use AssetManager\Resolver\MimeResolverAwareInterface;
 use AssetManager\Service\MimeResolver;
 use AssetManagerTest\Service\MapIterable;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -23,7 +24,7 @@ class MapResolverTest extends TestCase
             )
         );
 
-        $this->assertSame(
+        Assert::assertSame(
             array(
                 'key1' => 'value1',
                 'key2' => 'value2'
@@ -35,7 +36,7 @@ class MapResolverTest extends TestCase
     public function testGetMimeResolver()
     {
         $resolver = new MapResolver;
-        $this->assertNull($resolver->getMimeResolver());
+        Assert::assertNull($resolver->getMimeResolver());
     }
 
     public function testSetMapSuccess()
@@ -43,7 +44,7 @@ class MapResolverTest extends TestCase
         $resolver = new MapResolver;
         $resolver->setMap(new MapIterable());
 
-        $this->assertEquals(
+        Assert::assertEquals(
             array(
                 'mapName1' => array(
                     'map 1.1',
@@ -79,13 +80,13 @@ class MapResolverTest extends TestCase
     public function testGetMap()
     {
         $resolver = new MapResolver;
-        $this->assertSame(array(), $resolver->getMap());
+        Assert::assertSame(array(), $resolver->getMap());
     }
 
     public function testResolveNull()
     {
         $resolver = new MapResolver;
-        $this->assertNull($resolver->resolve('bacon'));
+        Assert::assertNull($resolver->resolve('bacon'));
     }
 
     public function testResolveAssetFail()
@@ -96,14 +97,14 @@ class MapResolverTest extends TestCase
             'bacon' => 'porn',
         );
 
-        $this->assertNull($resolver->setMap($asset1));
+        Assert::assertNull($resolver->setMap($asset1));
     }
 
     public function testResolveAssetSuccess()
     {
         $resolver = new MapResolver;
 
-        $this->assertTrue($resolver instanceof MimeResolverAwareInterface);
+        Assert::assertTrue($resolver instanceof MimeResolverAwareInterface);
 
         $mimeResolver = new MimeResolver;
 
@@ -118,9 +119,9 @@ class MapResolverTest extends TestCase
         $asset = $resolver->resolve('bacon');
         $mimetype = $mimeResolver->getMimeType(__FILE__);
 
-        $this->assertTrue($asset instanceof FileAsset);
-        $this->assertEquals($mimetype, $asset->getMimeType());
-        $this->assertEquals($asset->dump(), file_get_contents(__FILE__));
+        Assert::assertTrue($asset instanceof FileAsset);
+        Assert::assertEquals($mimetype, $asset->getMimeType());
+        Assert::assertEquals($asset->dump(), file_get_contents(__FILE__));
     }
 
     public function testResolveHttpAssetSuccess()
@@ -130,10 +131,10 @@ class MapResolverTest extends TestCase
             ->getMockBuilder(MimeResolver::class)
             ->getMock();
 
-        $mimeResolver->expects($this->any())
+        $mimeResolver->expects(TestCase::any())
             ->method('getMimeType')
             ->with('http://foo.bar/')
-            ->will($this->returnValue('text/foo'));
+            ->will(TestCase::returnValue('text/foo'));
 
         $resolver->setMimeResolver($mimeResolver);
 
@@ -145,8 +146,8 @@ class MapResolverTest extends TestCase
 
         $asset = $resolver->resolve('bacon');
 
-        $this->assertTrue($asset instanceof HttpAsset);
-        $this->assertSame('text/foo', $asset->getMimeType());
+        Assert::assertTrue($asset instanceof HttpAsset);
+        Assert::assertSame('text/foo', $asset->getMimeType());
     }
 
     /**
@@ -162,6 +163,6 @@ class MapResolverTest extends TestCase
         );
         $resolver = new MapResolver($map);
 
-        $this->assertEquals(array_keys($map), $resolver->collect());
+        Assert::assertEquals(array_keys($map), $resolver->collect());
     }
 }

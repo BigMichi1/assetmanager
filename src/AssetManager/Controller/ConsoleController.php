@@ -65,14 +65,14 @@ class ConsoleController extends AbstractActionController
     /**
      * Dumps all assets to cache directories.
      */
-    public function warmupAction()
+    public function warmupAction(): void
     {
         $request = $this->getRequest();
         if (!($request instanceof Request)) {
             throw new RuntimeException('You can use this controller only from a console!');
         }
-        $purge = $request->getParam('purge', false);
-        $verbose = $request->getParam('verbose', false) || $request->getParam('v', false);
+        $purge = (bool)$request->getParam('purge', false);
+        $verbose = (bool)$request->getParam('verbose', false) || (bool)$request->getParam('v', false);
 
         // purge cache for every configuration
         if ($purge) {
@@ -98,15 +98,21 @@ class ConsoleController extends AbstractActionController
      * @param bool $verbose verbose flag, default false
      * @return bool false if caching is not set, otherwise true
      */
-    protected function purgeCache($verbose = false)
+    private function purgeCache($verbose = false): bool
     {
 
-        if (empty($this->appConfig['asset_manager']['caching'])) {
+        if (!isset($this->appConfig['asset_manager']['caching'])
+            || !is_array($this->appConfig['asset_manager']['caching'])
+            || count($this->appConfig['asset_manager']['caching']) === 0
+        ) {
             return false;
         }
 
         foreach ($this->appConfig['asset_manager']['caching'] as $configName => $config) {
-            if (empty($config['options']['dir'])) {
+            if (!isset($config['options']['dir'])
+                || !is_string($config['options']['dir'])
+                || strlen($config['options']['dir']) === 0
+            ) {
                 continue;
             }
             $this->output(sprintf('Purging %s on "%s"...', $config['options']['dir'], $configName), $verbose);
@@ -128,7 +134,7 @@ class ConsoleController extends AbstractActionController
      * @param string $node - uri of node that should be removed from filesystem
      * @param bool $verbose verbose flag, default false
      */
-    protected function recursiveRemove(string $node, $verbose = false)
+    private function recursiveRemove(string $node, $verbose = false): void
     {
         if (is_dir($node)) {
             $objects = scandir($node);
@@ -150,7 +156,7 @@ class ConsoleController extends AbstractActionController
      * @param string $line
      * @param bool $verbose verbose flag, default true
      */
-    protected function output(string $line, $verbose = true)
+    private function output(string $line, $verbose = true): void
     {
         if ($verbose) {
             $this->console->writeLine($line);

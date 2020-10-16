@@ -6,6 +6,7 @@ use AssetManager\Asset\FileAsset;
 use AssetManager\Exception\InvalidArgumentException;
 use AssetManager\Resolver\AliasPathStackResolver;
 use AssetManager\Service\MimeResolver;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionException;
@@ -35,7 +36,7 @@ class AliasPathStackResolverTest extends TestCase
         $property = $reflectionClass->getProperty('aliases');
         $property->setAccessible(true);
 
-        $this->assertEquals(
+        Assert::assertEquals(
             $aliases,
             $property->getValue($resolver)
         );
@@ -73,7 +74,7 @@ class AliasPathStackResolverTest extends TestCase
 
         $addAlias->invoke($resolver, 'alias', 'path');
 
-        $this->assertEquals(
+        Assert::assertEquals(
             array('alias' => 'path' . DIRECTORY_SEPARATOR),
             $property->getValue($resolver)
         );
@@ -138,7 +139,7 @@ class AliasPathStackResolverTest extends TestCase
 
         $result = $addAlias->invoke($resolver, 'somePath\/\/\/');
 
-        $this->assertEquals(
+        Assert::assertEquals(
             'somePath' . DIRECTORY_SEPARATOR,
             $result
         );
@@ -162,7 +163,7 @@ class AliasPathStackResolverTest extends TestCase
 
         $returned = $resolver->getMimeResolver();
 
-        $this->assertEquals($mimeResolver, $returned);
+        Assert::assertEquals($mimeResolver, $returned);
     }
 
     /**
@@ -188,7 +189,7 @@ class AliasPathStackResolverTest extends TestCase
         $resolver = new AliasPathStackResolver(array('my/alias/' => __DIR__));
         $returned = $resolver->isLfiProtectionOn();
 
-        $this->assertTrue($returned);
+        Assert::assertTrue($returned);
     }
 
     /**
@@ -203,12 +204,12 @@ class AliasPathStackResolverTest extends TestCase
         $resolver->setLfiProtection(true);
         $returned = $resolver->isLfiProtectionOn();
 
-        $this->assertTrue($returned);
+        Assert::assertTrue($returned);
 
         $resolver->setLfiProtection(false);
         $returned = $resolver->isLfiProtectionOn();
 
-        $this->assertFalse($returned);
+        Assert::assertFalse($returned);
     }
 
     /**
@@ -219,13 +220,13 @@ class AliasPathStackResolverTest extends TestCase
     public function testResolve()
     {
         $resolver = new AliasPathStackResolver(array('my/alias/' => __DIR__));
-        $this->assertTrue($resolver instanceof AliasPathStackResolver);
+        Assert::assertTrue($resolver instanceof AliasPathStackResolver);
         $mimeResolver = new MimeResolver();
         $resolver->setMimeResolver($mimeResolver);
         $fileAsset = new FileAsset(__FILE__);
         $fileAsset->setMimeType($mimeResolver->getMimeType(__FILE__));
-        $this->assertEquals($fileAsset, $resolver->resolve('my/alias/' . basename(__FILE__)));
-        $this->assertNull($resolver->resolve('i-do-not-exist.php'));
+        Assert::assertEquals($fileAsset, $resolver->resolve('my/alias/' . basename(__FILE__)));
+        Assert::assertNull($resolver->resolve('i-do-not-exist.php'));
     }
 
     /**
@@ -240,7 +241,7 @@ class AliasPathStackResolverTest extends TestCase
         $resolver->setMimeResolver($mimeResolver);
         $fileAsset = new FileAsset(__FILE__);
         $fileAsset->setMimeType($mimeResolver->getMimeType(__FILE__));
-        $this->assertEquals($fileAsset, $resolver->resolve('my/alias/' . basename(__FILE__)));
+        Assert::assertEquals($fileAsset, $resolver->resolve('my/alias/' . basename(__FILE__)));
     }
 
     /**
@@ -253,7 +254,7 @@ class AliasPathStackResolverTest extends TestCase
         $resolver->setMimeResolver($mimeResolver);
         $fileAsset = new FileAsset(__FILE__);
         $fileAsset->setMimeType($mimeResolver->getMimeType(__FILE__));
-        $this->assertEquals($fileAsset, $resolver->resolve('AliasPathStackResolverTest/' . basename(__FILE__)));
+        Assert::assertEquals($fileAsset, $resolver->resolve('AliasPathStackResolverTest/' . basename(__FILE__)));
 
         $map = array(
             'AliasPathStackResolverTest/' => __DIR__,
@@ -263,7 +264,7 @@ class AliasPathStackResolverTest extends TestCase
         $resolver->setMimeResolver(new MimeResolver());
         $fileAsset = new FileAsset(__FILE__);
         $fileAsset->setMimeType($mimeResolver->getMimeType(__FILE__));
-        $this->assertEquals($fileAsset, $resolver->resolve('prefix/AliasPathStackResolverTest/' . basename(__FILE__)));
+        Assert::assertEquals($fileAsset, $resolver->resolve('prefix/AliasPathStackResolverTest/' . basename(__FILE__)));
     }
 
     /**
@@ -274,7 +275,7 @@ class AliasPathStackResolverTest extends TestCase
     public function testWillNotResolveDirectories()
     {
         $resolver = new AliasPathStackResolver(array('my/alias/' => __DIR__ . '/..'));
-        $this->assertNull($resolver->resolve('my/alias/' . basename(__DIR__)));
+        Assert::assertNull($resolver->resolve('my/alias/' . basename(__DIR__)));
     }
 
     /**
@@ -289,15 +290,15 @@ class AliasPathStackResolverTest extends TestCase
         $resolver->setMimeResolver($mimeResolver);
 
         // should be on by default
-        $this->assertTrue($resolver->isLfiProtectionOn());
+        Assert::assertTrue($resolver->isLfiProtectionOn());
 
-        $this->assertNull($resolver->resolve(
+        Assert::assertNull($resolver->resolve(
             '..' . DIRECTORY_SEPARATOR . basename(__DIR__) . DIRECTORY_SEPARATOR . basename(__FILE__)
         ));
 
         $resolver->setLfiProtection(false);
 
-        $this->assertEquals(
+        Assert::assertEquals(
             file_get_contents(__FILE__),
             $resolver->resolve(
                 'my/alias/..' . DIRECTORY_SEPARATOR . basename(__DIR__) . DIRECTORY_SEPARATOR . basename(__FILE__)
@@ -315,8 +316,8 @@ class AliasPathStackResolverTest extends TestCase
         $alias = 'my/alias/';
         $resolver = new AliasPathStackResolver(array($alias => __DIR__));
 
-        $this->assertContains($alias . basename(__FILE__), $resolver->collect());
-        $this->assertNotContains($alias . 'i-do-not-exist.php', $resolver->collect());
+        Assert::assertContains($alias . basename(__FILE__), $resolver->collect());
+        Assert::assertNotContains($alias . 'i-do-not-exist.php', $resolver->collect());
     }
 
     /**
@@ -330,7 +331,7 @@ class AliasPathStackResolverTest extends TestCase
         $resolver = new AliasPathStackResolver(array($alias => realpath(__DIR__ . '/../')));
         $dir = substr(__DIR__, strrpos(__DIR__, '/', 0) + 1);
 
-        $this->assertContains($alias . $dir . DIRECTORY_SEPARATOR . basename(__FILE__), $resolver->collect());
-        $this->assertNotContains($alias . $dir . DIRECTORY_SEPARATOR . 'i-do-not-exist.php', $resolver->collect());
+        Assert::assertContains($alias . $dir . DIRECTORY_SEPARATOR . basename(__FILE__), $resolver->collect());
+        Assert::assertNotContains($alias . $dir . DIRECTORY_SEPARATOR . 'i-do-not-exist.php', $resolver->collect());
     }
 }

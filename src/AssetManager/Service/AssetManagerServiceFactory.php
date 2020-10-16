@@ -22,7 +22,10 @@ class AssetManagerServiceFactory implements FactoryInterface
         $config = $container->get('config');
         $assetManagerConfig = array();
 
-        if (!empty($config['asset_manager'])) {
+        if (isset($config['asset_manager'])
+            && is_array($config['asset_manager'])
+            && count($config['asset_manager']) > 0
+        ) {
             $assetManagerConfig = $config['asset_manager'];
         }
 

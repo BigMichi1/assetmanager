@@ -21,7 +21,9 @@ class AssetCacheManagerServiceFactory implements FactoryInterface
 
         $globalConfig = $container->get('config');
 
-        if (!empty($globalConfig['asset_manager']['caching'])) {
+        if (isset($globalConfig['asset_manager']['caching'])
+            && is_array($globalConfig['asset_manager']['caching'])
+            && count($globalConfig['asset_manager']['caching']) > 0) {
             $config = $globalConfig['asset_manager']['caching'];
         }
 

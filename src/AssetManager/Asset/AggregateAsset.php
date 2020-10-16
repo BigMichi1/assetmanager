@@ -27,8 +27,12 @@ class AggregateAsset extends BaseAsset implements AssetWithMimeTypeInterface
      * @param string|null $sourceRoot The source asset root directory
      * @param string|null $sourcePath The source asset path
      */
-    public function __construct(array $content = array(), $filters = array(), $sourceRoot = null, $sourcePath = null)
-    {
+    public function __construct(
+        array $content = [],
+        array $filters = [],
+        ?string $sourceRoot = null,
+        ?string $sourcePath = null
+    ) {
         parent::__construct($filters, $sourceRoot, $sourcePath);
         $this->processContent($content);
     }
@@ -38,7 +42,7 @@ class AggregateAsset extends BaseAsset implements AssetWithMimeTypeInterface
      *
      * @param ?FilterInterface $additionalFilter
      */
-    public function load(FilterInterface $additionalFilter = null)
+    public function load(FilterInterface $additionalFilter = null): void
     {
         $this->doLoad($this->getContent(), $additionalFilter);
     }
@@ -50,7 +54,7 @@ class AggregateAsset extends BaseAsset implements AssetWithMimeTypeInterface
      *
      * @param int $lastModified
      */
-    public function setLastModified(int $lastModified)
+    public function setLastModified(int $lastModified): void
     {
         $this->lastModified = $lastModified;
     }
@@ -60,7 +64,7 @@ class AggregateAsset extends BaseAsset implements AssetWithMimeTypeInterface
      *
      * @return int|null
      */
-    public function getLastModified()
+    public function getLastModified(): ?int
     {
         return $this->lastModified;
     }
@@ -72,7 +76,7 @@ class AggregateAsset extends BaseAsset implements AssetWithMimeTypeInterface
      *
      * @throws Exception\RuntimeException
      */
-    private function processContent(array $content)
+    private function processContent(array $content): void
     {
         $this->mimetype = null;
         foreach ($content as $asset) {
@@ -105,7 +109,7 @@ class AggregateAsset extends BaseAsset implements AssetWithMimeTypeInterface
     /**
      * @return string|null
      */
-    public function getMimetype(): ?string
+    public function getMimeType(): ?string
     {
         return $this->mimetype;
     }
@@ -113,7 +117,7 @@ class AggregateAsset extends BaseAsset implements AssetWithMimeTypeInterface
     /**
      * @param string|null $mimetype
      */
-    public function setMimetype(?string $mimetype): void
+    public function setMimeType(?string $mimetype): void
     {
         $this->mimetype = $mimetype;
     }

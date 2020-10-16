@@ -15,7 +15,10 @@ class AssetFilterManagerServiceFactory implements FactoryInterface
         $filters = array();
         $config = $container->get('config');
 
-        if (!empty($config['asset_manager']['filters'])) {
+        if (isset($config['asset_manager']['filters'])
+            && is_array($config['asset_manager']['filters'])
+            && count($config['asset_manager']['filters']) > 0
+        ) {
             $filters = $config['asset_manager']['filters'];
         }
 

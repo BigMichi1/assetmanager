@@ -69,7 +69,7 @@ class AssetCacheManager
     {
         $cacheProvider = $this->getCacheProviderConfig($path);
 
-        if (!$cacheProvider) {
+        if ($cacheProvider === null || count($cacheProvider) === 0) {
             return null;
         }
 
@@ -87,7 +87,9 @@ class AssetCacheManager
         $dir = '';
         $class = $cacheProvider['cache'];
 
-        if (!empty($cacheProvider['options']['dir'])) {
+        if (isset($cacheProvider['options']['dir'])
+            && is_string($cacheProvider['options']['dir'])
+            && strlen($cacheProvider['options']['dir']) > 0) {
             $dir = $cacheProvider['options']['dir'];
         }
 
@@ -107,13 +109,17 @@ class AssetCacheManager
     {
         $cacheProvider = null;
 
-        if (!empty($this->config[$path]) && !empty($this->config[$path]['cache'])) {
+        if (isset($this->config[$path]['cache'])
+            && is_string($this->config[$path]['cache'])
+            && strlen($this->config[$path]['cache']) > 0
+        ) {
             $cacheProvider = $this->config[$path];
         }
 
-        if (!$cacheProvider
-            && !empty($this->config['default'])
-            && !empty($this->config['default']['cache'])
+        if ($cacheProvider === null
+            && isset($this->config['default']['cache'])
+            && is_string($this->config['default']['cache'])
+            && strlen($this->config['default']['cache']) > 0
         ) {
             $cacheProvider = $this->config['default'];
         }

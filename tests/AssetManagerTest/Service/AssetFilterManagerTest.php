@@ -9,6 +9,7 @@ use AssetManager\Exception\RuntimeException;
 use AssetManager\Service\AssetFilterManager;
 use CustomFilter;
 use Laminas\ServiceManager\ServiceManager;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 class AssetFilterManagerTest extends TestCase
@@ -33,7 +34,7 @@ class AssetFilterManagerTest extends TestCase
 
         $assetFilterManager->setFilters('test/path.test', $asset);
 
-        $this->assertEquals('Herp Derp', $asset->dump());
+        Assert::assertEquals('Herp Derp', $asset->dump());
     }
 
     public function testEnsureByService()
@@ -54,7 +55,7 @@ class AssetFilterManagerTest extends TestCase
 
         $assetFilterManager->setFilters('test/path.test', $asset);
 
-        $this->assertEquals('called', $asset->dump());
+        Assert::assertEquals('called', $asset->dump());
     }
 
     public function testEnsureByServiceInvalid()
@@ -76,7 +77,7 @@ class AssetFilterManagerTest extends TestCase
 
         $assetFilterManager->setFilters('test/path.test', $asset);
 
-        $this->assertEquals('called', $asset->dump());
+        Assert::assertEquals('called', $asset->dump());
     }
 
     public function testEnsureByInvalid()
@@ -107,9 +108,9 @@ class AssetFilterManagerTest extends TestCase
 
         $asset = $this->getMockBuilder(AssetWithMimeTypeInterface::class)->getMock();
         $asset
-            ->expects($this->any())
+            ->expects(TestCase::any())
             ->method('ensureFilter')
-            ->with($this->callback(function (FilterInterface $filter) use (&$filterInstance) {
+            ->with(Assert::callback(function (FilterInterface $filter) use (&$filterInstance): bool {
                 if ($filterInstance === null) {
                     $filterInstance = $filter;
                 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace AssetManager\View\Helper;
 
 use AssetManager\Resolver\ResolverInterface;
@@ -23,27 +24,27 @@ class Asset extends AbstractHelper
     private $cache;
 
     /**
-     * @param ResolverInterface         $assetManagerResolver
+     * @param ResolverInterface $assetManagerResolver
      * @param AbstractCacheAdapter|null $cache
-     * @param array                     $config
+     * @param array $config
      */
-    public function __construct(ResolverInterface $assetManagerResolver, $cache, $config)
+    public function __construct(ResolverInterface $assetManagerResolver, ?AbstractCacheAdapter $cache, array $config)
     {
         $this->assetManagerResolver = $assetManagerResolver;
-        $this->cache                = $cache;
-        $this->config               = $config;
+        $this->cache = $cache;
+        $this->config = $config;
     }
 
     /**
      * Append timestamp as query param to the filename
      *
-     * @param string   $filename
-     * @param string   $queryString
+     * @param string $filename
+     * @param string $queryString
      * @param int|null $timestamp
      *
      * @return string
      */
-    private function appendTimestamp($filename, $queryString, $timestamp = null)
+    private function appendTimestamp(string $filename, string $queryString, ?int $timestamp = null): string
     {
         // current timestamp as default
         $timestamp = $timestamp === null ? time() : $timestamp;
@@ -58,7 +59,7 @@ class Asset extends AbstractHelper
      * @param string $queryString
      * @return string
      */
-    private function elaborateFilePath($filename, $queryString)
+    private function elaborateFilePath(string $filename, string $queryString): string
     {
         $asset = $this->assetManagerResolver->resolve($filename);
         if ($asset !== null) {
@@ -75,9 +76,9 @@ class Asset extends AbstractHelper
      * @param string $filename
      * @param string $queryString
      *
-     * @return mixed|string
+     * @return string|null
      */
-    private function getFilePathFromCache($filename, $queryString)
+    private function getFilePathFromCache(string $filename, string $queryString): ?string
     {
         // return if cache not found
         if ($this->cache == null) {
@@ -104,10 +105,12 @@ class Asset extends AbstractHelper
      * @param string $filename
      * @return string
      */
-    public function __invoke($filename)
+    public function __invoke(string $filename): string
     {
         // nothing to append
-        if (empty($this->config['view_helper']['append_timestamp'])) {
+        if (!isset($this->config['view_helper']['append_timestamp'])
+            || !$this->config['view_helper']['append_timestamp']
+        ) {
             return $filename;
         }
 

@@ -6,6 +6,7 @@ use AssetManager\Service\AssetFilterManager;
 use AssetManager\Service\AssetFilterManagerServiceFactory;
 use AssetManager\Service\MimeResolver;
 use Laminas\ServiceManager\ServiceManager;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 class AssetFilterManagerServiceFactoryTest extends TestCase
@@ -32,6 +33,6 @@ class AssetFilterManagerServiceFactoryTest extends TestCase
 
         $service = $serviceFactory($serviceManager, AssetFilterManager::class);
 
-        $this->assertTrue($service instanceof AssetFilterManager);
+        Assert::assertTrue($service instanceof AssetFilterManager);
     }
 }

@@ -27,7 +27,10 @@ class AggregateResolverServiceFactory implements FactoryInterface
         $config = isset($config['asset_manager']) ? $config['asset_manager'] : array();
         $resolver = new AggregateResolver();
 
-        if (empty($config['resolvers'])) {
+        if (!isset($config['resolvers'])
+            || !is_array($config['resolvers'])
+            || count($config['resolvers']) === 0
+        ) {
             return $resolver;
         }
 

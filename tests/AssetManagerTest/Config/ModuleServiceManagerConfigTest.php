@@ -3,6 +3,7 @@
 namespace AssetManagerTest\Config;
 
 use AssetManager\Service\MimeResolver;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Laminas\ServiceManager\Config;
 use Laminas\ServiceManager\ServiceManager;
@@ -29,12 +30,12 @@ class ModuleServiceManagerConfigTest extends TestCase
         $serviceManager->setService('config', $config);
 
         foreach ($config['service_manager']['factories'] as $serviceName => $service) {
-            $this->assertTrue($serviceManager->has($serviceName));
+            Assert::assertTrue($serviceManager->has($serviceName));
 
             //Make sure we can fetch the service
             $service = $serviceManager->get($serviceName);
 
-            $this->assertTrue(is_object($service));
+            Assert::assertTrue(is_object($service));
         }
     }
 
@@ -53,12 +54,12 @@ class ModuleServiceManagerConfigTest extends TestCase
         $serviceManager->setService('config', $config);
 
         foreach ($config['service_manager']['invokables'] as $serviceName => $service) {
-            $this->assertTrue($serviceManager->has($serviceName));
+            Assert::assertTrue($serviceManager->has($serviceName));
 
             //Make sure we can fetch the service
             $service = $serviceManager->get($serviceName);
 
-            $this->assertTrue(is_object($service));
+            Assert::assertTrue(is_object($service));
         }
     }
 
@@ -77,12 +78,12 @@ class ModuleServiceManagerConfigTest extends TestCase
         $serviceManager->setService('config', $config);
 
         foreach ($config['service_manager']['aliases'] as $serviceName => $service) {
-            $this->assertTrue($serviceManager->has($serviceName));
+            Assert::assertTrue($serviceManager->has($serviceName));
 
             //Make sure we can fetch the service
             $service = $serviceManager->get($serviceName);
 
-            $this->assertTrue(is_object($service));
+            Assert::assertTrue(is_object($service));
         }
     }
 
@@ -100,8 +101,8 @@ class ModuleServiceManagerConfigTest extends TestCase
         $serviceManagerConfig->configureServiceManager($serviceManager);
         $serviceManager->setService('config', $config);
 
-        $this->assertTrue($serviceManager->has(MimeResolver::class));
-        $this->assertTrue(is_object($serviceManager->get(MimeResolver::class)));
+        Assert::assertTrue($serviceManager->has(MimeResolver::class));
+        Assert::assertTrue(is_object($serviceManager->get(MimeResolver::class)));
     }
 
     /**
@@ -118,7 +119,7 @@ class ModuleServiceManagerConfigTest extends TestCase
         $serviceManagerConfig->configureServiceManager($serviceManager);
         $serviceManager->setService('config', $config);
 
-        $this->assertTrue($serviceManager->has('mime_resolver'));
-        $this->assertTrue(is_object($serviceManager->get('mime_resolver')));
+        Assert::assertTrue($serviceManager->has('mime_resolver'));
+        Assert::assertTrue(is_object($serviceManager->get('mime_resolver')));
     }
 }

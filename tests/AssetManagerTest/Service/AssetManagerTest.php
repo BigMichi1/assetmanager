@@ -14,6 +14,7 @@ use AssetManager\Service\MimeResolver;
 use Laminas\Console\Request as ConsoleRequest;
 use Laminas\Http\PhpEnvironment\Request;
 use Laminas\Http\Response;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use TypeError;
@@ -52,10 +53,10 @@ class AssetManagerTest extends TestCase
         $asset->setMimeType($mimeResolver->getMimeType($resolveTo));
         $resolver = $this->getMockBuilder(ResolverInterface::class)->getMock();
         $resolver
-            ->expects($this->once())
+            ->expects(TestCase::once())
             ->method('resolve')
             ->with('asset-path')
-            ->will($this->returnValue($asset));
+            ->will(TestCase::returnValue($asset));
 
         return $resolver;
     }
@@ -85,7 +86,7 @@ class AssetManagerTest extends TestCase
             ->getMock();
         $assetManager = new AssetManager($resolver, array('herp', 'derp'));
 
-        $this->assertSame($resolver, $assetManager->getResolver());
+        Assert::assertSame($resolver, $assetManager->getResolver());
     }
 
     public function testConstructFailsOnOtherType()
@@ -102,17 +103,17 @@ class AssetManagerTest extends TestCase
         $asset->setMimeType($mimeResolver->getMimeType(__FILE__));
         $resolver = $this->getMockBuilder(ResolverInterface::class)->getMock();
         $resolver
-            ->expects($this->any())
+            ->expects(TestCase::any())
             ->method('resolve')
             ->with('asset-path')
-            ->will($this->returnValue($asset));
+            ->will(TestCase::returnValue($asset));
 
         $request = new ConsoleRequest();
 
         $assetManager = new AssetManager($resolver);
         $resolvesToAsset = $assetManager->resolvesToAsset($request);
 
-        $this->assertFalse($resolvesToAsset);
+        Assert::assertFalse($resolvesToAsset);
     }
 
     public function testResolvesToAsset()
@@ -120,7 +121,7 @@ class AssetManagerTest extends TestCase
         $assetManager = new AssetManager($this->getResolver());
         $resolvesToAsset = $assetManager->resolvesToAsset($this->getRequest());
 
-        $this->assertTrue($resolvesToAsset);
+        Assert::assertTrue($resolvesToAsset);
     }
 
     /*
@@ -139,7 +140,7 @@ class AssetManagerTest extends TestCase
         $assetManager = new AssetManager($this->getResolver());
         $resolvesToAsset = $assetManager->resolvesToAsset($this->getRequest());
 
-        $this->assertTrue(is_bool($resolvesToAsset));
+        Assert::assertTrue(is_bool($resolvesToAsset));
     }
 
     /*
@@ -158,7 +159,7 @@ class AssetManagerTest extends TestCase
             ->getMock();
         $assetManager->setResolver($newResolver);
 
-        $this->assertSame($newResolver, $assetManager->getResolver());
+        Assert::assertSame($newResolver, $assetManager->getResolver());
     }
 
     public function testSetResolverFailsOnInvalidType()
@@ -179,7 +180,7 @@ class AssetManagerTest extends TestCase
             ->getMock();
         $assetManager = new AssetManager($resolver);
 
-        $this->assertSame($resolver, $assetManager->getResolver());
+        Assert::assertSame($resolver, $assetManager->getResolver());
     }
 
     public function testSetStandardFilters()
@@ -204,9 +205,9 @@ class AssetManagerTest extends TestCase
         $minified = \JSMin::minify(file_get_contents(__DIR__ . '/../../_files/require-jquery.js'));
         $assetManager->setAssetFilterManager($assetFilterManager);
         $assetManager->setAssetCacheManager($assetCacheManager);
-        $this->assertTrue($assetManager->resolvesToAsset($request));
+        Assert::assertTrue($assetManager->resolvesToAsset($request));
         $assetManager->setAssetOnResponse($response);
-        $this->assertEquals($minified, $response->getBody());
+        Assert::assertEquals($minified, $response->getBody());
     }
 
     public function testSetExtensionFilters()
@@ -234,9 +235,9 @@ class AssetManagerTest extends TestCase
         $assetManager->setAssetFilterManager($assetFilterManager);
         $assetManager->setAssetCacheManager($assetCacheManager);
 
-        $this->assertTrue($assetManager->resolvesToAsset($request));
+        Assert::assertTrue($assetManager->resolvesToAsset($request));
         $assetManager->setAssetOnResponse($response);
-        $this->assertEquals($minified, $response->getBody());
+        Assert::assertEquals($minified, $response->getBody());
     }
 
     public function testSetExtensionFiltersNotDuplicate()
@@ -267,11 +268,11 @@ class AssetManagerTest extends TestCase
         $assetManager->setAssetCacheManager($assetCacheManager);
         $assetManager->setAssetFilterManager($assetFilterManager);
 
-        $this->assertTrue($assetManager->resolvesToAsset($request));
+        Assert::assertTrue($assetManager->resolvesToAsset($request));
         $assetManager->setAssetOnResponse($response);
 
         $reversedOnlyOnce = '1' . strrev(file_get_contents(__DIR__ . '/../../_files/require-jquery.js'));
-        $this->assertEquals($reversedOnlyOnce, $response->getBody());
+        Assert::assertEquals($reversedOnlyOnce, $response->getBody());
     }
 
     public function testSetMimeTypeFilters()
@@ -299,9 +300,9 @@ class AssetManagerTest extends TestCase
         $assetManager->setAssetFilterManager($assetFilterManager);
         $assetManager->setAssetCacheManager($assetCacheManager);
 
-        $this->assertTrue($assetManager->resolvesToAsset($request));
+        Assert::assertTrue($assetManager->resolvesToAsset($request));
         $assetManager->setAssetOnResponse($response);
-        $this->assertEquals($minified, $response->getBody());
+        Assert::assertEquals($minified, $response->getBody());
     }
 
     public function testCustomFilters()
@@ -327,9 +328,9 @@ class AssetManagerTest extends TestCase
         $assetManager->setAssetFilterManager($assetFilterManager);
         $assetManager->setAssetCacheManager($assetCacheManager);
 
-        $this->assertTrue($assetManager->resolvesToAsset($request));
+        Assert::assertTrue($assetManager->resolvesToAsset($request));
         $assetManager->setAssetOnResponse($response);
-        $this->assertEquals('called', $response->getBody());
+        Assert::assertEquals('called', $response->getBody());
     }
 
     public function testSetEmptyFilters()
@@ -351,9 +352,9 @@ class AssetManagerTest extends TestCase
         $assetManager->setAssetFilterManager($assetFilterManager);
         $assetManager->setAssetCacheManager($assetCacheManager);
 
-        $this->assertTrue($assetManager->resolvesToAsset($request));
+        Assert::assertTrue($assetManager->resolvesToAsset($request));
         $assetManager->setAssetOnResponse($response);
-        $this->assertEquals(file_get_contents(__DIR__ . '/../../_files/require-jquery.js'), $response->getBody());
+        Assert::assertEquals(file_get_contents(__DIR__ . '/../../_files/require-jquery.js'), $response->getBody());
     }
 
     public function testSetFalseClassFilter()
@@ -396,14 +397,14 @@ class AssetManagerTest extends TestCase
         $assetManager->resolvesToAsset($request);
         $response = $assetManager->setAssetOnResponse(new Response);
 
-        $this->assertSame(file_get_contents(__FILE__), $response->getContent());
+        Assert::assertSame(file_get_contents(__FILE__), $response->getContent());
     }
 
     public function testAssetSetOnResponse()
     {
         $assetManager = new AssetManager($this->getResolver());
         $assetCacheManager = $this->getAssetCacheManagerMock();
-        $this->assertFalse($assetManager->assetSetOnResponse());
+        Assert::assertFalse($assetManager->assetSetOnResponse());
 
         $assetFilterManager = new AssetFilterManager();
         $assetFilterManager->setMimeResolver(new MimeResolver);
@@ -412,7 +413,7 @@ class AssetManagerTest extends TestCase
         $assetManager->resolvesToAsset($this->getRequest());
         $assetManager->setAssetOnResponse(new Response);
 
-        $this->assertTrue($assetManager->assetSetOnResponse());
+        Assert::assertTrue($assetManager->assetSetOnResponse());
     }
 
     public function testSetAssetOnResponseNoMimeType()
@@ -421,10 +422,10 @@ class AssetManagerTest extends TestCase
         $asset = new FileAsset(__FILE__);
         $resolver = $this->getMockBuilder(ResolverInterface::class)->getMock();
         $resolver
-            ->expects($this->once())
+            ->expects(TestCase::once())
             ->method('resolve')
             ->with('asset-path')
-            ->will($this->returnValue($asset));
+            ->will(TestCase::returnValue($asset));
 
         $assetManager = new AssetManager($resolver);
         $request = $this->getRequest();
@@ -447,7 +448,7 @@ class AssetManagerTest extends TestCase
         $assetManager->resolvesToAsset($request);
         /** @var Response $response */
         $response = $assetManager->setAssetOnResponse(new Response());
-        $this->assertInstanceOf(Response::class, $response);
+        Assert::assertInstanceOf(Response::class, $response);
 
         $thisFile = file_get_contents(__FILE__);
 
@@ -462,7 +463,7 @@ class AssetManagerTest extends TestCase
         $headers = 'Content-Transfer-Encoding: binary' . "\r\n";
         $headers .= 'Content-Type: ' . $mimeType . "\r\n";
         $headers .= 'Content-Length: ' . $fileSize . "\r\n";
-        $this->assertSame($headers, $response->getHeaders()->toString());
+        Assert::assertSame($headers, $response->getHeaders()->toString());
     }
 
     public function testSetAssetOnReponseFailsWhenNotResolved()
@@ -484,7 +485,7 @@ class AssetManagerTest extends TestCase
         $assetManager = new AssetManager($resolver);
         $resolvesToAsset = $assetManager->resolvesToAsset(new Request);
 
-        $this->assertFalse($resolvesToAsset);
+        Assert::assertFalse($resolvesToAsset);
     }
 
     public function testClearOutputBufferInSetAssetOnResponse()
@@ -520,9 +521,9 @@ class AssetManagerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $assetCacheManager->expects($this->any())
+        $assetCacheManager->expects(TestCase::any())
             ->method('setCache')
-            ->will($this->returnCallback(
+            ->will(TestCase::returnCallback(
                 function ($path, $asset) {
                     return $asset;
                 }

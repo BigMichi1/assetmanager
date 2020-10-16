@@ -10,6 +10,7 @@ use AssetManager\Service\AssetFilterManager;
 use AssetManager\Service\MimeResolver;
 use InterfaceTestResolver;
 use Laminas\ServiceManager\ServiceManager;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -31,8 +32,8 @@ class AggregateResolverServiceFactoryTest extends TestCase
 
         $factory = new AggregateResolverServiceFactory();
         $resolver = $factory($serviceManager, AggregateResolver::class);
-        $this->assertInstanceOf(ResolverInterface::class, $resolver);
-        $this->assertNull($resolver->resolve('/some-path'));
+        Assert::assertInstanceOf(ResolverInterface::class, $resolver);
+        Assert::assertNull($resolver->resolve('/some-path'));
     }
 
     public function testWillAttachResolver()
@@ -53,17 +54,17 @@ class AggregateResolverServiceFactoryTest extends TestCase
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
         $mockedResolver
-            ->expects($this->once())
+            ->expects(TestCase::once())
             ->method('resolve')
             ->with('test-path')
-            ->will($this->returnValue('test-resolved-path'));
+            ->will(TestCase::returnValue('test-resolved-path'));
         $serviceManager->setService('mocked_resolver', $mockedResolver);
         $serviceManager->setService(MimeResolver::class, new MimeResolver);
 
         $serviceFactory = new AggregateResolverServiceFactory();
         $resolver = $serviceFactory($serviceManager, AggregateResolver::class);
 
-        $this->assertSame('test-resolved-path', $resolver->resolve('test-path'));
+        Assert::assertSame('test-resolved-path', $resolver->resolve('test-path'));
     }
 
     public function testInvalidCustomResolverFails()
@@ -108,10 +109,10 @@ class AggregateResolverServiceFactoryTest extends TestCase
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
         $mockedResolver1
-            ->expects($this->once())
+            ->expects(TestCase::once())
             ->method('resolve')
             ->with('test-path')
-            ->will($this->returnValue('test-resolved-path'));
+            ->will(TestCase::returnValue('test-resolved-path'));
         $serviceManager->setService('AssetManager\Service\MimeResolver', new MimeResolver);
         $serviceManager->setService('mocked_resolver_1', $mockedResolver1);
 
@@ -119,14 +120,14 @@ class AggregateResolverServiceFactoryTest extends TestCase
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
         $mockedResolver2
-            ->expects($this->never())
+            ->expects(TestCase::never())
             ->method('resolve');
         $serviceManager->setService('mocked_resolver_2', $mockedResolver2);
 
         $factory = new AggregateResolverServiceFactory();
         $resolver = $factory($serviceManager, AggregateResolver::class);
 
-        $this->assertSame('test-resolved-path', $resolver->resolve('test-path'));
+        Assert::assertSame('test-resolved-path', $resolver->resolve('test-path'));
     }
 
     public function testWillFallbackToLowerPriorityRoutes()
@@ -148,10 +149,10 @@ class AggregateResolverServiceFactoryTest extends TestCase
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
         $mockedResolver1
-            ->expects($this->once())
+            ->expects(TestCase::once())
             ->method('resolve')
             ->with('test-path')
-            ->will($this->returnValue(null));
+            ->will(TestCase::returnValue(null));
         $serviceManager->setService('mocked_resolver_1', $mockedResolver1);
         $serviceManager->setService('AssetManager\Service\MimeResolver', new MimeResolver);
 
@@ -159,16 +160,16 @@ class AggregateResolverServiceFactoryTest extends TestCase
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
         $mockedResolver2
-            ->expects($this->once())
+            ->expects(TestCase::once())
             ->method('resolve')
             ->with('test-path')
-            ->will($this->returnValue('test-resolved-path'));
+            ->will(TestCase::returnValue('test-resolved-path'));
         $serviceManager->setService('mocked_resolver_2', $mockedResolver2);
 
         $factory = new AggregateResolverServiceFactory();
         $resolver = $factory($serviceManager, AggregateResolver::class);
 
-        $this->assertSame('test-resolved-path', $resolver->resolve('test-path'));
+        Assert::assertSame('test-resolved-path', $resolver->resolve('test-path'));
     }
 
     public function testWillSetForInterfaces()
@@ -195,8 +196,8 @@ class AggregateResolverServiceFactoryTest extends TestCase
 
         $factory($serviceManager, AggregateResolver::class);
 
-        $this->assertTrue($interfaceTestResolver->calledMime);
-        $this->assertTrue($interfaceTestResolver->calledAggregate);
-        $this->assertTrue($interfaceTestResolver->calledFilterManager);
+        Assert::assertTrue($interfaceTestResolver->calledMime);
+        Assert::assertTrue($interfaceTestResolver->calledAggregate);
+        Assert::assertTrue($interfaceTestResolver->calledFilterManager);
     }
 }

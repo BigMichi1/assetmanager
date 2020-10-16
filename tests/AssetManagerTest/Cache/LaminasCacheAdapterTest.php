@@ -5,6 +5,7 @@ namespace AssetManagerTest\Cache;
 use AssetManager\Cache\LaminasCacheAdapter;
 use DateTime;
 use Laminas\Cache\Storage\Adapter\Memory;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use TypeError;
 
@@ -23,7 +24,7 @@ class LaminasCacheAdapterTest extends TestCase
 
         $adapter = new LaminasCacheAdapter($mockLaminasCache);
 
-        $this->assertInstanceOf(LaminasCacheAdapter::class, $adapter);
+        Assert::assertInstanceOf(LaminasCacheAdapter::class, $adapter);
     }
 
     public function testConstructorOnlyAcceptsALaminasCacheStorageInterface()
@@ -39,7 +40,7 @@ class LaminasCacheAdapterTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockLaminasCache->expects($this->once())
+        $mockLaminasCache->expects(TestCase::once())
             ->method('hasItem');
 
         $adapter = new LaminasCacheAdapter($mockLaminasCache);
@@ -52,7 +53,7 @@ class LaminasCacheAdapterTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockLaminasCache->expects($this->once())
+        $mockLaminasCache->expects(TestCase::once())
             ->method('getItem');
 
         $adapter = new LaminasCacheAdapter($mockLaminasCache);
@@ -65,7 +66,7 @@ class LaminasCacheAdapterTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockLaminasCache->expects($this->once())
+        $mockLaminasCache->expects(TestCase::once())
             ->method('setItem');
 
         $adapter = new LaminasCacheAdapter($mockLaminasCache);
@@ -78,7 +79,7 @@ class LaminasCacheAdapterTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockLaminasCache->expects($this->once())
+        $mockLaminasCache->expects(TestCase::once())
             ->method('removeItem');
 
         $adapter = new LaminasCacheAdapter($mockLaminasCache);

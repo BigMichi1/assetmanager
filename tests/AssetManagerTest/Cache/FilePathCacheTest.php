@@ -2,9 +2,10 @@
 
 namespace AssetManagerTest\Cache;
 
-use Assetic\Cache\CacheInterface;
+use Assetic\Contracts\Cache\CacheInterface;
 use AssetManager\Cache\FilePathCache;
 use AssetManager\Exception\RuntimeException;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 
@@ -13,18 +14,18 @@ class FilePathCacheTest extends TestCase
     public function testConstruct()
     {
         $cache = new FilePathCache('/imagination', 'bacon.porn');
-        $this->assertTrue($cache instanceof CacheInterface);
+        Assert::assertTrue($cache instanceof CacheInterface);
     }
 
     public function testHas()
     {
         // Check fail
         $cache = new FilePathCache('/imagination', 'bacon.porn');
-        $this->assertFalse($cache->has('bacon'));
+        Assert::assertFalse($cache->has('bacon'));
 
         // Check success
         $cache = new FilePathCache('', __FILE__);
-        $this->assertTrue($cache->has('bacon'));
+        Assert::assertTrue($cache->has('bacon'));
     }
 
     public function testGetException()
@@ -37,7 +38,7 @@ class FilePathCacheTest extends TestCase
     public function testGet()
     {
         $cache = new FilePathCache('', __FILE__);
-        $this->assertEquals(file_get_contents(__FILE__), $cache->get('bacon'));
+        Assert::assertEquals(file_get_contents(__FILE__), $cache->get('bacon'));
     }
 
     public function testSetMayNotWriteFile()
@@ -112,7 +113,7 @@ class FilePathCacheTest extends TestCase
             $cache = new FilePathCache($base, 'bacon.' . $time);
 
             $cache->set('bacon', $sentence);
-            $this->assertEquals($sentence, file_get_contents($base . 'bacon.' . $time));
+            Assert::assertEquals($sentence, file_get_contents($base . 'bacon.' . $time));
         } finally {
             $this->rrmdir($base);
         }
@@ -137,7 +138,7 @@ class FilePathCacheTest extends TestCase
 
             $cache->set('bacon', $sentence);
 
-            $this->assertTrue($cache->remove('bacon'));
+            Assert::assertTrue($cache->remove('bacon'));
         } finally {
             $this->rrmdir($base);
         }
@@ -149,7 +150,7 @@ class FilePathCacheTest extends TestCase
 
         $method->setAccessible(true);
 
-        $this->assertEquals(
+        Assert::assertEquals(
             '/' . ltrim(__FILE__, '/'),
             $method->invoke(new FilePathCache('', __FILE__))
         );

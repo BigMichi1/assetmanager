@@ -11,6 +11,7 @@ use AssetManager\Service\AssetFilterManager;
 use AssetManager\Service\MimeResolver;
 use AssetManagerTest\Service\ConcatIterable;
 use Laminas\Stdlib\Exception\InvalidArgumentException;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use TypeError;
@@ -30,10 +31,10 @@ class ConcatResolverTest extends TestCase
             )
         );
 
-        $this->assertTrue($resolver instanceof ResolverInterface);
-        $this->assertTrue($resolver instanceof AggregateResolverAwareInterface);
+        Assert::assertTrue($resolver instanceof ResolverInterface);
+        Assert::assertTrue($resolver instanceof AggregateResolverAwareInterface);
 
-        $this->assertSame(
+        Assert::assertSame(
             array(
                 'key1' => array(
                     __FILE__
@@ -54,14 +55,14 @@ class ConcatResolverTest extends TestCase
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
         $aggregateResolver
-            ->expects($this->once())
+            ->expects(TestCase::once())
             ->method('resolve')
             ->with('say')
-            ->will($this->returnValue('world'));
+            ->will(TestCase::returnValue('world'));
 
         $resolver->setAggregateResolver($aggregateResolver);
 
-        $this->assertEquals('world', $resolver->getAggregateResolver()->resolve('say'));
+        Assert::assertEquals('world', $resolver->getAggregateResolver()->resolve('say'));
     }
 
     public function testSetAggregateResolverFails()
@@ -79,7 +80,7 @@ class ConcatResolverTest extends TestCase
 
         $resolver->setConcats(new ConcatIterable());
 
-        $this->assertEquals(
+        Assert::assertEquals(
             array(
                 'mapName1' => array(
                     'map 1.1',
@@ -114,13 +115,13 @@ class ConcatResolverTest extends TestCase
     public function testGetConcat()
     {
         $resolver = new ConcatResolver;
-        $this->assertSame(array(), $resolver->getConcats());
+        Assert::assertSame(array(), $resolver->getConcats());
     }
 
     public function testResolveNull()
     {
         $resolver = new ConcatResolver;
-        $this->assertNull($resolver->resolve('bacon'));
+        Assert::assertNull($resolver->resolve('bacon'));
     }
 
     public function testResolveAssetFail()
@@ -131,7 +132,7 @@ class ConcatResolverTest extends TestCase
             'bacon' => 'yummy',
         );
 
-        $this->assertNull($resolver->setConcats($asset1));
+        Assert::assertNull($resolver->setConcats($asset1));
     }
 
     public function testResolveAssetSuccess()
@@ -145,19 +146,17 @@ class ConcatResolverTest extends TestCase
             ),
         );
 
-        $callback = function ($file) {
-            return new FileAsset(
-                $file
-            );
+        $callback = function ($file): FileAsset {
+            return new FileAsset($file);
         };
 
         $aggregateResolver = $this
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
         $aggregateResolver
-            ->expects($this->exactly(2))
+            ->expects(TestCase::exactly(2))
             ->method('resolve')
-            ->will($this->returnCallback($callback));
+            ->will(TestCase::returnCallback($callback));
         $resolver->setAggregateResolver($aggregateResolver);
 
         $assetFilterManager = new AssetFilterManager();
@@ -170,8 +169,8 @@ class ConcatResolverTest extends TestCase
 
         $asset = $resolver->resolve('bacon');
 
-        $this->assertTrue($asset instanceof AggregateAsset);
-        $this->assertEquals(
+        Assert::assertTrue($asset instanceof AggregateAsset);
+        Assert::assertEquals(
             $asset->dump(),
             file_get_contents(__FILE__) . file_get_contents(__FILE__)
         );
@@ -198,6 +197,6 @@ class ConcatResolverTest extends TestCase
         );
         $resolver = new ConcatResolver($concats);
 
-        $this->assertEquals(array_keys($concats), $resolver->collect());
+        Assert::assertEquals(array_keys($concats), $resolver->collect());
     }
 }

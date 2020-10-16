@@ -5,6 +5,7 @@ namespace AssetManagerTest\Service;
 use AssetManager\Resolver\PathStackResolver;
 use AssetManager\Service\PathStackResolverServiceFactory;
 use Laminas\ServiceManager\ServiceManager;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 class PathStackResolverServiceFactoryTest extends TestCase
@@ -32,7 +33,7 @@ class PathStackResolverServiceFactoryTest extends TestCase
         $factory = new PathStackResolverServiceFactory();
         /* @var $resolver PathStackResolver */
         $resolver = $factory($serviceManager, PathStackResolver::class);
-        $this->assertSame(
+        Assert::assertSame(
             array(
                 'path2/',
                 'path1/',
@@ -52,6 +53,6 @@ class PathStackResolverServiceFactoryTest extends TestCase
         $factory = new PathStackResolverServiceFactory();
         /* @var $resolver PathStackResolver */
         $resolver = $factory($serviceManager, PathStackResolver::class);
-        $this->assertEmpty($resolver->getPaths()->toArray());
+        Assert::assertEmpty($resolver->getPaths()->toArray());
     }
 }

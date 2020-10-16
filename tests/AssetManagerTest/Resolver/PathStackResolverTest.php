@@ -9,6 +9,7 @@ use AssetManager\Resolver\MimeResolverAwareInterface;
 use AssetManager\Resolver\PathStackResolver;
 use AssetManager\Resolver\ResolverInterface;
 use AssetManager\Service\MimeResolver;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use TypeError;
@@ -18,21 +19,21 @@ class PathStackResolverTest extends TestCase
     public function testConstructor()
     {
         $resolver = new PathStackResolver();
-        $this->assertEmpty($resolver->getPaths()->toArray());
+        Assert::assertEmpty($resolver->getPaths()->toArray());
 
         $resolver->addPaths(array(__DIR__));
-        $this->assertEquals(array(__DIR__ . DIRECTORY_SEPARATOR), $resolver->getPaths()->toArray());
+        Assert::assertEquals(array(__DIR__ . DIRECTORY_SEPARATOR), $resolver->getPaths()->toArray());
 
         $resolver->clearPaths();
-        $this->assertEquals(array(), $resolver->getPaths()->toArray());
+        Assert::assertEquals(array(), $resolver->getPaths()->toArray());
 
-        $this->assertTrue($resolver instanceof MimeResolverAwareInterface);
-        $this->assertTrue($resolver instanceof ResolverInterface);
+        Assert::assertTrue($resolver instanceof MimeResolverAwareInterface);
+        Assert::assertTrue($resolver instanceof ResolverInterface);
         $mimeResolver = new MimeResolver;
 
         $resolver->setMimeResolver($mimeResolver);
 
-        $this->assertEquals($mimeResolver, $resolver->getMimeResolver());
+        Assert::assertEquals($mimeResolver, $resolver->getMimeResolver());
     }
 
     public function testSetMimeResolverFailObject()
@@ -56,7 +57,7 @@ class PathStackResolverTest extends TestCase
         $resolver = new PathStackResolver();
         $resolver->setPaths(array('dir2', 'dir1'));
         // order inverted because of how a stack is traversed
-        $this->assertSame(
+        Assert::assertSame(
             array('dir1' . DIRECTORY_SEPARATOR, 'dir2' . DIRECTORY_SEPARATOR),
             $resolver->getPaths()->toArray()
         );
@@ -66,7 +67,7 @@ class PathStackResolverTest extends TestCase
             'dir3',
         ));
         $resolver->setPaths($paths);
-        $this->assertSame(
+        Assert::assertSame(
             array('dir3' . DIRECTORY_SEPARATOR, 'dir4' . DIRECTORY_SEPARATOR),
             $resolver->getPaths()->toArray()
         );
@@ -78,7 +79,7 @@ class PathStackResolverTest extends TestCase
     public function testResolve()
     {
         $resolver = new PathStackResolver();
-        $this->assertTrue($resolver instanceof PathStackResolver);
+        Assert::assertTrue($resolver instanceof PathStackResolver);
 
         $mimeResolver = new MimeResolver;
         $resolver->setMimeResolver($mimeResolver);
@@ -88,8 +89,8 @@ class PathStackResolverTest extends TestCase
         $fileAsset = new FileAsset(__FILE__);
         $fileAsset->setMimeType($mimeResolver->getMimeType(__FILE__));
 
-        $this->assertEquals($fileAsset, $resolver->resolve(basename(__FILE__)));
-        $this->assertNull($resolver->resolve('i-do-not-exist.php'));
+        Assert::assertEquals($fileAsset, $resolver->resolve(basename(__FILE__)));
+        Assert::assertNull($resolver->resolve('i-do-not-exist.php'));
     }
 
     public function testWillNotResolveDirectories()
@@ -97,7 +98,7 @@ class PathStackResolverTest extends TestCase
         $resolver = new PathStackResolver();
         $resolver->addPath(__DIR__ . '/..');
 
-        $this->assertNull($resolver->resolve(basename(__DIR__)));
+        Assert::assertNull($resolver->resolve(basename(__DIR__)));
     }
 
     public function testLfiProtection()
@@ -107,16 +108,16 @@ class PathStackResolverTest extends TestCase
         $resolver->setMimeResolver($mimeResolver);
 
         // should be on by default
-        $this->assertTrue($resolver->isLfiProtectionOn());
+        Assert::assertTrue($resolver->isLfiProtectionOn());
         $resolver->addPath(__DIR__);
 
-        $this->assertNull($resolver->resolve(
+        Assert::assertNull($resolver->resolve(
             '..' . DIRECTORY_SEPARATOR . basename(__DIR__) . DIRECTORY_SEPARATOR . basename(__FILE__)
         ));
 
         $resolver->setLfiProtection(false);
 
-        $this->assertEquals(
+        Assert::assertEquals(
             file_get_contents(__FILE__),
             $resolver->resolve(
                 '..' . DIRECTORY_SEPARATOR . basename(__DIR__) . DIRECTORY_SEPARATOR . basename(__FILE__)
@@ -141,8 +142,8 @@ class PathStackResolverTest extends TestCase
         $resolver = new PathStackResolver();
         $resolver->addPath(__DIR__);
 
-        $this->assertContains(basename(__FILE__), $resolver->collect());
-        $this->assertNotContains('i-do-not-exist.php', $resolver->collect());
+        Assert::assertContains(basename(__FILE__), $resolver->collect());
+        Assert::assertNotContains('i-do-not-exist.php', $resolver->collect());
     }
 
     /**
@@ -156,7 +157,7 @@ class PathStackResolverTest extends TestCase
         $resolver->addPath(realpath(__DIR__ . '/../'));
         $dir = substr(__DIR__, strrpos(__DIR__, '/', 0) + 1);
 
-        $this->assertContains($dir . DIRECTORY_SEPARATOR . basename(__FILE__), $resolver->collect());
-        $this->assertNotContains($dir . DIRECTORY_SEPARATOR . 'i-do-not-exist.php', $resolver->collect());
+        Assert::assertContains($dir . DIRECTORY_SEPARATOR . basename(__FILE__), $resolver->collect());
+        Assert::assertNotContains($dir . DIRECTORY_SEPARATOR . 'i-do-not-exist.php', $resolver->collect());
     }
 }

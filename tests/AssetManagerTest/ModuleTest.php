@@ -14,6 +14,7 @@ use Laminas\Http\Response;
 use Laminas\Mvc\ApplicationInterface;
 use Laminas\Mvc\MvcEvent;
 use Laminas\ServiceManager\ServiceLocatorInterface;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -27,14 +28,14 @@ class ModuleTest extends TestCase
     {
         $module = new Module();
         // just testing ZF specification requirements
-        $this->assertIsArray($module->getAutoloaderConfig());
+        Assert::assertIsArray($module->getAutoloaderConfig());
     }
 
     public function testGetConfig()
     {
         $module = new Module();
         // just testing ZF specification requirements
-        $this->assertIsArray($module->getConfig());
+        Assert::assertIsArray($module->getConfig());
     }
 
     /**
@@ -51,7 +52,7 @@ class ModuleTest extends TestCase
 
         $response = $module->onDispatch($event);
 
-        $this->assertNull($response);
+        Assert::assertNull($response);
     }
 
     public function testOnDispatchDoesntResolveToAsset()
@@ -64,25 +65,25 @@ class ModuleTest extends TestCase
             ->setConstructorArgs(array($resolver))
             ->getMock();
         $assetManager
-            ->expects($this->once())
+            ->expects(TestCase::once())
             ->method('resolvesToAsset')
-            ->will($this->returnValue(false));
+            ->will(TestCase::returnValue(false));
 
         $serviceManager = $this
             ->getMockBuilder(ServiceLocatorInterface::class)
             ->getMock();
         $serviceManager
-            ->expects($this->any())
+            ->expects(TestCase::any())
             ->method('get')
-            ->will($this->returnValue($assetManager));
+            ->will(TestCase::returnValue($assetManager));
 
         $application = $this
             ->getMockBuilder(ApplicationInterface::class)
             ->getMock();
         $application
-            ->expects($this->once())
+            ->expects(TestCase::once())
             ->method('getServiceManager')
-            ->will($this->returnValue($serviceManager));
+            ->will(TestCase::returnValue($serviceManager));
 
         $event = new MvcEvent();
         $response = new Response();
@@ -96,7 +97,7 @@ class ModuleTest extends TestCase
 
         $return = $module->onDispatch($event);
 
-        $this->assertNull($return);
+        Assert::assertNull($return);
     }
 
     public function testOnDispatchStatus200()
@@ -110,34 +111,34 @@ class ModuleTest extends TestCase
             ->setConstructorArgs(array($resolver))
             ->getMock();
         $assetManager
-            ->expects($this->once())
+            ->expects(TestCase::once())
             ->method('resolvesToAsset')
-            ->will($this->returnValue(true));
+            ->will(TestCase::returnValue(true));
 
 
         $amResponse = new Response();
         $amResponse->setContent('bacon');
 
         $assetManager
-            ->expects($this->once())
+            ->expects(TestCase::once())
             ->method('setAssetOnResponse')
-            ->will($this->returnValue($amResponse));
+            ->will(TestCase::returnValue($amResponse));
 
         $serviceManager = $this
             ->getMockBuilder(ServiceLocatorInterface::class)
             ->getMock();
         $serviceManager
-            ->expects($this->any())
+            ->expects(TestCase::any())
             ->method('get')
-            ->will($this->returnValue($assetManager));
+            ->will(TestCase::returnValue($assetManager));
 
         $application = $this
             ->getMockBuilder(ApplicationInterface::class)
             ->getMock();
         $application
-            ->expects($this->once())
+            ->expects(TestCase::once())
             ->method('getServiceManager')
-            ->will($this->returnValue($serviceManager));
+            ->will(TestCase::returnValue($serviceManager));
 
         $event = new MvcEvent();
         $response = new Response();
@@ -152,8 +153,8 @@ class ModuleTest extends TestCase
         /** @var Response $return */
         $return = $module->onDispatch($event);
 
-        $this->assertInstanceOf(Response::class, $return);
-        $this->assertEquals(200, $return->getStatusCode());
+        Assert::assertInstanceOf(Response::class, $return);
+        Assert::assertEquals(200, $return->getStatusCode());
     }
 
     /**
@@ -169,10 +170,10 @@ class ModuleTest extends TestCase
             ->getMock();
         $module = new Module();
 
-        $cliResponse->expects($this->never())->method('setErrorLevel');
-        $mvcEvent->expects($this->once())->method('getResponse')->will($this->returnValue($cliResponse));
+        $cliResponse->expects(TestCase::never())->method('setErrorLevel');
+        $mvcEvent->expects(TestCase::once())->method('getResponse')->will(TestCase::returnValue($cliResponse));
 
-        $this->assertNull($module->onDispatch($mvcEvent));
+        Assert::assertNull($module->onDispatch($mvcEvent));
     }
 
     public function testOnBootstrap()
@@ -183,9 +184,9 @@ class ModuleTest extends TestCase
             ->getMockBuilder(ApplicationInterface::class)
             ->getMock();
         $application
-            ->expects($this->any())
+            ->expects(TestCase::any())
             ->method('getEventManager')
-            ->will($this->returnValue($applicationEventManager));
+            ->will(TestCase::returnValue($applicationEventManager));
 
         $event = new Event();
         $event->setTarget($application);
