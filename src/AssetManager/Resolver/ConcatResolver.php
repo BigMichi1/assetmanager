@@ -4,6 +4,7 @@ namespace AssetManager\Resolver;
 
 use Assetic\Contracts\Asset\AssetInterface;
 use AssetManager\Asset\AggregateAsset;
+use AssetManager\Asset\AssetWithMimeTypeInterface;
 use AssetManager\Exception;
 use AssetManager\Service\AssetFilterManager;
 use AssetManager\Service\AssetFilterManagerAwareInterface;
@@ -119,7 +120,7 @@ class ConcatResolver implements
     /**
      * {@inheritDoc}
      */
-    public function resolve($name)
+    public function resolve($name): ?AssetWithMimeTypeInterface
     {
         if (!isset($this->concats[$name])) {
             return null;
@@ -179,7 +180,7 @@ class ConcatResolver implements
     /**
      * {@inheritDoc}
      */
-    public function collect()
+    public function collect(): array
     {
         return array_keys($this->concats);
     }

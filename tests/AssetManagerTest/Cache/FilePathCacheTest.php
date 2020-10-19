@@ -14,7 +14,7 @@ class FilePathCacheTest extends TestCase
     public function testConstruct()
     {
         $cache = new FilePathCache('/imagination', 'bacon.porn');
-        Assert::assertTrue($cache instanceof CacheInterface);
+        Assert::assertInstanceOf(CacheInterface::class, $cache);
     }
 
     public function testHas()

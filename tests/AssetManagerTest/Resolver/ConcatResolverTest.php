@@ -4,6 +4,7 @@ namespace AssetManagerTest\Resolver;
 
 use AssetManager\Asset\AggregateAsset;
 use AssetManager\Asset\FileAsset;
+use AssetManager\Asset\StringAsset;
 use AssetManager\Resolver\AggregateResolverAwareInterface;
 use AssetManager\Resolver\ConcatResolver;
 use AssetManager\Resolver\ResolverInterface;
@@ -31,8 +32,8 @@ class ConcatResolverTest extends TestCase
             )
         );
 
-        Assert::assertTrue($resolver instanceof ResolverInterface);
-        Assert::assertTrue($resolver instanceof AggregateResolverAwareInterface);
+        Assert::assertInstanceOf(ResolverInterface::class, $resolver);
+        Assert::assertInstanceOf(AggregateResolverAwareInterface::class, $resolver);
 
         Assert::assertSame(
             array(
@@ -58,11 +59,14 @@ class ConcatResolverTest extends TestCase
             ->expects(TestCase::once())
             ->method('resolve')
             ->with('say')
-            ->will(TestCase::returnValue('world'));
+            ->willReturn(new StringAsset('world'));
 
         $resolver->setAggregateResolver($aggregateResolver);
 
-        Assert::assertEquals('world', $resolver->getAggregateResolver()->resolve('say'));
+        $asset = $resolver->getAggregateResolver()->resolve('say');
+        $asset->load();
+
+        Assert::assertEquals('world', $asset->getContent());
     }
 
     public function testSetAggregateResolverFails()

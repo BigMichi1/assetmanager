@@ -2,6 +2,7 @@
 
 namespace AssetManager\Resolver;
 
+use AssetManager\Asset\AssetWithMimeTypeInterface;
 use Laminas\Stdlib\PriorityQueue;
 
 /**
@@ -28,8 +29,8 @@ class AggregateResolver implements ResolverInterface
     /**
      * Attach a resolver
      *
-     * @param  ResolverInterface $resolver
-     * @param  int               $priority
+     * @param ResolverInterface $resolver
+     * @param int $priority
      */
     public function attach(ResolverInterface $resolver, $priority = 1)
     {
@@ -39,7 +40,7 @@ class AggregateResolver implements ResolverInterface
     /**
      * {@inheritDoc}
      */
-    public function resolve($name)
+    public function resolve($name): ?AssetWithMimeTypeInterface
     {
         foreach ($this->queue as $resolver) {
             $resource = $resolver->resolve($name);
@@ -54,7 +55,7 @@ class AggregateResolver implements ResolverInterface
     /**
      * {@inheritDoc}
      */
-    public function collect()
+    public function collect(): array
     {
         $collection = array();
 

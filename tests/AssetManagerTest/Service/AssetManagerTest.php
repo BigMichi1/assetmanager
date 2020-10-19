@@ -140,7 +140,7 @@ class AssetManagerTest extends TestCase
         $assetManager = new AssetManager($this->getResolver());
         $resolvesToAsset = $assetManager->resolvesToAsset($this->getRequest());
 
-        Assert::assertTrue(is_bool($resolvesToAsset));
+        Assert::assertTrue($resolvesToAsset);
     }
 
     /*

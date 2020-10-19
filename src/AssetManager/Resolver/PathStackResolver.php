@@ -3,6 +3,7 @@
 namespace AssetManager\Resolver;
 
 use Assetic\Factory\Resource\DirectoryResource;
+use AssetManager\Asset\AssetWithMimeTypeInterface;
 use AssetManager\Asset\FileAsset;
 use AssetManager\Exception\InvalidArgumentException;
 use AssetManager\Service\MimeResolver;
@@ -168,7 +169,7 @@ class PathStackResolver implements ResolverInterface, MimeResolverAwareInterface
     /**
      * {@inheritDoc}
      */
-    public function resolve($name)
+    public function resolve($name): ?AssetWithMimeTypeInterface
     {
         if ($this->isLfiProtectionOn() && preg_match('#\.\.[\\\/]#', $name)) {
             return null;
@@ -194,7 +195,7 @@ class PathStackResolver implements ResolverInterface, MimeResolverAwareInterface
     /**
      * {@inheritDoc}
      */
-    public function collect()
+    public function collect(): array
     {
         $collection = array();
         foreach ($this->getPaths() as $path) {

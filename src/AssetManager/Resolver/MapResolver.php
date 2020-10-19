@@ -2,6 +2,7 @@
 
 namespace AssetManager\Resolver;
 
+use AssetManager\Asset\AssetWithMimeTypeInterface;
 use AssetManager\Asset\FileAsset;
 use AssetManager\Asset\HttpAsset;
 use AssetManager\Exception;
@@ -94,7 +95,7 @@ class MapResolver implements ResolverInterface, MimeResolverAwareInterface
     /**
      * {@inheritDoc}
      */
-    public function resolve($name)
+    public function resolve($name): ?AssetWithMimeTypeInterface
     {
         if (!isset($this->map[$name])) {
             return null;
@@ -117,7 +118,7 @@ class MapResolver implements ResolverInterface, MimeResolverAwareInterface
     /**
      * {@inheritDoc}
      */
-    public function collect()
+    public function collect(): array
     {
         return array_keys($this->map);
     }

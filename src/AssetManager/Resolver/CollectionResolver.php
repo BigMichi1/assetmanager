@@ -105,7 +105,7 @@ class CollectionResolver implements
     /**
      * {@inheritDoc}
      */
-    public function resolve(string $name): ?AssetCollection
+    public function resolve(string $name): ?AssetWithMimeTypeInterface
     {
         if (!isset($this->collections[$name])) {
             return null;
@@ -129,12 +129,6 @@ class CollectionResolver implements
             }
             if (null === ($res = $this->getAggregateResolver()->resolve($asset))) {
                 throw new Exception\RuntimeException("Asset '$asset' could not be found.");
-            }
-
-            if (!$res instanceof AssetWithMimeTypeInterface) {
-                throw new Exception\RuntimeException(
-                    "Asset '$asset' does not implement Assetic\\Asset\\AssetInterface."
-                );
             }
 
             if (null !== $mimeType && $res->getMimeType() !== $mimeType) {
@@ -181,7 +175,7 @@ class CollectionResolver implements
     /**
      * {@inheritDoc}
      */
-    public function collect()
+    public function collect(): array
     {
         return array_keys($this->collections);
     }

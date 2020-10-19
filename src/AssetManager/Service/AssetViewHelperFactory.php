@@ -8,7 +8,6 @@ use AssetManager\View\Helper\Asset;
 use Interop\Container\ContainerInterface;
 use Laminas\Cache\Storage\Adapter\AbstractAdapter as AbstractCacheAdapter;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Laminas\ServiceManager\ServiceLocatorInterface;
 
 class AssetViewHelperFactory implements FactoryInterface
 {
@@ -29,15 +28,17 @@ class AssetViewHelperFactory implements FactoryInterface
     }
 
     /**
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param ContainerInterface $serviceLocator
      * @param array $config
      *
      * @return null
      */
-    private function loadCache($serviceLocator, $config)
+    private function loadCache(ContainerInterface $serviceLocator, array $config)
     {
         // check if the cache is configured
-        if (!isset($config['view_helper']['cache']) || $config['view_helper']['cache'] === null) {
+        if (!isset($config['view_helper']['cache'])
+            || $config['view_helper']['cache'] == null
+        ) {
             return null;
         }
 

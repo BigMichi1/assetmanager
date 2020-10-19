@@ -27,8 +27,8 @@ class PathStackResolverTest extends TestCase
         $resolver->clearPaths();
         Assert::assertEquals(array(), $resolver->getPaths()->toArray());
 
-        Assert::assertTrue($resolver instanceof MimeResolverAwareInterface);
-        Assert::assertTrue($resolver instanceof ResolverInterface);
+        Assert::assertInstanceOf(MimeResolverAwareInterface::class, $resolver);
+        Assert::assertInstanceOf(ResolverInterface::class, $resolver);
         $mimeResolver = new MimeResolver;
 
         $resolver->setMimeResolver($mimeResolver);
@@ -79,9 +79,8 @@ class PathStackResolverTest extends TestCase
     public function testResolve()
     {
         $resolver = new PathStackResolver();
-        Assert::assertTrue($resolver instanceof PathStackResolver);
 
-        $mimeResolver = new MimeResolver;
+        $mimeResolver = new MimeResolver();
         $resolver->setMimeResolver($mimeResolver);
 
         $resolver->addPath(__DIR__);

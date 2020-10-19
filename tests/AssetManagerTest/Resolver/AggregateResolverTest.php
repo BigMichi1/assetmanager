@@ -2,6 +2,7 @@
 
 namespace AssetManagerTest\Resolver;
 
+use AssetManager\Asset\StringAsset;
 use AssetManager\Resolver\AggregateResolver;
 use AssetManager\Resolver\ResolverInterface;
 use PHPUnit\Framework\Assert;
@@ -13,7 +14,7 @@ class AggregateResolverTest extends TestCase
     {
         $resolver = new AggregateResolver();
 
-        Assert::assertTrue($resolver instanceof ResolverInterface);
+        Assert::assertInstanceOf(ResolverInterface::class, $resolver);
 
         $lowPriority = $this
             ->getMockBuilder(ResolverInterface::class)
@@ -22,10 +23,12 @@ class AggregateResolverTest extends TestCase
             ->expects(TestCase::once())
             ->method('resolve')
             ->with('to-be-resolved')
-            ->will(TestCase::returnValue('first'));
+            ->willReturn(new StringAsset('first'));
         $resolver->attach($lowPriority);
+        $assetLowPriority = $resolver->resolve('to-be-resolved');
+        $assetLowPriority->load();
 
-        Assert::assertSame('first', $resolver->resolve('to-be-resolved'));
+        Assert::assertSame('first', $assetLowPriority->getContent());
 
         $highPriority = $this
             ->getMockBuilder(ResolverInterface::class)
@@ -34,10 +37,13 @@ class AggregateResolverTest extends TestCase
             ->expects(TestCase::exactly(2))
             ->method('resolve')
             ->with('to-be-resolved')
-            ->will(TestCase::returnValue('second'));
+            ->willReturn(new StringAsset('second'));
         $resolver->attach($highPriority, 1000);
 
-        Assert::assertSame('second', $resolver->resolve('to-be-resolved'));
+        $assetHighPriority = $resolver->resolve('to-be-resolved');
+        $assetHighPriority->load();
+
+        Assert::assertSame('second', $assetHighPriority->getContent());
 
         $averagePriority = $this
             ->getMockBuilder(ResolverInterface::class)
@@ -45,10 +51,13 @@ class AggregateResolverTest extends TestCase
         $averagePriority
             ->expects(TestCase::never())
             ->method('resolve')
-            ->will(TestCase::returnValue('third'));
+            ->willReturn(new StringAsset('third'));
         $resolver->attach($averagePriority, 500);
 
-        Assert::assertSame('second', $resolver->resolve('to-be-resolved'));
+        $assetAveragePriority = $resolver->resolve('to-be-resolved');
+        $assetAveragePriority->load();
+
+        Assert::assertSame('second', $assetAveragePriority->getContent());
     }
 
     public function testCollectWithCollectMethod()

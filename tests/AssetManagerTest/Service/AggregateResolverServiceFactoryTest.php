@@ -2,6 +2,7 @@
 
 namespace AssetManagerTest\Service;
 
+use AssetManager\Asset\StringAsset;
 use AssetManager\Exception\RuntimeException;
 use AssetManager\Resolver\AggregateResolver;
 use AssetManager\Resolver\ResolverInterface;
@@ -57,14 +58,17 @@ class AggregateResolverServiceFactoryTest extends TestCase
             ->expects(TestCase::once())
             ->method('resolve')
             ->with('test-path')
-            ->will(TestCase::returnValue('test-resolved-path'));
+            ->willReturn(new StringAsset('test-resolved-path'));
         $serviceManager->setService('mocked_resolver', $mockedResolver);
         $serviceManager->setService(MimeResolver::class, new MimeResolver);
 
         $serviceFactory = new AggregateResolverServiceFactory();
         $resolver = $serviceFactory($serviceManager, AggregateResolver::class);
 
-        Assert::assertSame('test-resolved-path', $resolver->resolve('test-path'));
+        $asset = $resolver->resolve('test-path');
+        $asset->load();
+
+        Assert::assertSame('test-resolved-path', $asset->getContent());
     }
 
     public function testInvalidCustomResolverFails()
@@ -112,7 +116,7 @@ class AggregateResolverServiceFactoryTest extends TestCase
             ->expects(TestCase::once())
             ->method('resolve')
             ->with('test-path')
-            ->will(TestCase::returnValue('test-resolved-path'));
+            ->willReturn(new StringAsset('test-resolved-path'));
         $serviceManager->setService('AssetManager\Service\MimeResolver', new MimeResolver);
         $serviceManager->setService('mocked_resolver_1', $mockedResolver1);
 
@@ -127,7 +131,10 @@ class AggregateResolverServiceFactoryTest extends TestCase
         $factory = new AggregateResolverServiceFactory();
         $resolver = $factory($serviceManager, AggregateResolver::class);
 
-        Assert::assertSame('test-resolved-path', $resolver->resolve('test-path'));
+        $asset = $resolver->resolve('test-path');
+        $asset->load();
+
+        Assert::assertSame('test-resolved-path', $asset->getContent());
     }
 
     public function testWillFallbackToLowerPriorityRoutes()
@@ -163,13 +170,16 @@ class AggregateResolverServiceFactoryTest extends TestCase
             ->expects(TestCase::once())
             ->method('resolve')
             ->with('test-path')
-            ->will(TestCase::returnValue('test-resolved-path'));
+            ->willReturn(new StringAsset('test-resolved-path'));
         $serviceManager->setService('mocked_resolver_2', $mockedResolver2);
 
         $factory = new AggregateResolverServiceFactory();
         $resolver = $factory($serviceManager, AggregateResolver::class);
 
-        Assert::assertSame('test-resolved-path', $resolver->resolve('test-path'));
+        $asset = $resolver->resolve('test-path');
+        $asset->load();
+
+        Assert::assertSame('test-resolved-path', $asset->getContent());
     }
 
     public function testWillSetForInterfaces()

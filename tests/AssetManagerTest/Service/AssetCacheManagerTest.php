@@ -166,9 +166,8 @@ class AssetCacheManagerTest extends TestCase
         );
         $reflectionMethod->setAccessible(true);
 
-        /** @var FilePathCache $provider */
         $provider = $reflectionMethod->invoke($assetManager, 'my_provided_class.tmp');
-        Assert::assertTrue($provider instanceof FilePathCache);
+        Assert::assertInstanceOf(FilePathCache::class, $provider);
 
         $reflectionProperty = new ReflectionProperty(FilePathCache::class, 'dir');
         $reflectionProperty->setAccessible(true);

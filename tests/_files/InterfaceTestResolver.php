@@ -1,9 +1,11 @@
 <?php
 
+use AssetManager\Asset\AssetWithMimeTypeInterface;
 use AssetManager\Resolver;
 use AssetManager\Resolver\ResolverInterface;
-use AssetManager\Service\MimeResolver;
+use AssetManager\Service\AssetFilterManager;
 use AssetManager\Service\AssetFilterManagerAwareInterface;
+use AssetManager\Service\MimeResolver;
 
 class InterfaceTestResolver implements
     Resolver\ResolverInterface,
@@ -15,12 +17,14 @@ class InterfaceTestResolver implements
     public $calledMime;
     public $calledAggregate;
 
-    public function resolve($path)
+    public function resolve(string $path): ?AssetWithMimeTypeInterface
     {
+        return null;
     }
 
-    public function collect()
+    public function collect(): array
     {
+        return [];
     }
 
     public function getAggregateResolver()
@@ -48,7 +52,7 @@ class InterfaceTestResolver implements
 
     }
 
-    public function setAssetFilterManager(\AssetManager\Service\AssetFilterManager $filterManager)
+    public function setAssetFilterManager(AssetFilterManager $filterManager)
     {
         $this->calledFilterManager = true;
     }

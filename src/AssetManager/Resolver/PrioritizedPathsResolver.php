@@ -4,6 +4,7 @@ namespace AssetManager\Resolver;
 
 use ArrayAccess;
 use Assetic\Factory\Resource\DirectoryResource;
+use AssetManager\Asset\AssetWithMimeTypeInterface;
 use AssetManager\Asset\FileAsset;
 use AssetManager\Exception;
 use AssetManager\Service\MimeResolver;
@@ -167,7 +168,7 @@ class PrioritizedPathsResolver implements ResolverInterface, MimeResolverAwareIn
     /**
      * {@inheritDoc}
      */
-    public function resolve($name)
+    public function resolve($name): ?AssetWithMimeTypeInterface
     {
         if ($this->isLfiProtectionOn() && preg_match('#\.\.[\\\/]#', $name)) {
             return null;
@@ -193,7 +194,7 @@ class PrioritizedPathsResolver implements ResolverInterface, MimeResolverAwareIn
     /**
      * {@inheritDoc}
      */
-    public function collect()
+    public function collect(): array
     {
         $collection = array();
 

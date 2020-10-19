@@ -201,7 +201,7 @@ class AliasPathStackResolverTest extends TestCase
     public function testResolve()
     {
         $resolver = new AliasPathStackResolver(array('my/alias/' => __DIR__));
-        Assert::assertTrue($resolver instanceof AliasPathStackResolver);
+        Assert::assertInstanceOf(AliasPathStackResolver::class, $resolver);
         $mimeResolver = new MimeResolver();
         $resolver->setMimeResolver($mimeResolver);
         $fileAsset = new FileAsset(__FILE__);

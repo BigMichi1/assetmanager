@@ -40,8 +40,8 @@ class CollectionResolverTest extends TestCase
         $resolver = new CollectionResolver();
 
         // Check if valid instance
-        Assert::assertTrue($resolver instanceof ResolverInterface);
-        Assert::assertTrue($resolver instanceof AggregateResolverAwareInterface);
+        Assert::assertInstanceOf(ResolverInterface::class, $resolver);
+        Assert::assertInstanceOf(AggregateResolverAwareInterface::class, $resolver);
 
         // Check if set to empty (null argument)
         Assert::assertSame(array(), $resolver->getCollections());
@@ -142,11 +142,14 @@ class CollectionResolverTest extends TestCase
             ->expects(TestCase::once())
             ->method('resolve')
             ->with('say')
-            ->will(TestCase::returnValue('world'));
+            ->willReturn(new StringAsset('world'));
 
         $resolver->setAggregateResolver($aggregateResolver);
 
-        Assert::assertEquals('world', $resolver->getAggregateResolver()->resolve('say'));
+        $asset = $resolver->getAggregateResolver()->resolve('say');
+        $asset->load();
+
+        Assert::assertEquals('world', $asset->getContent());
     }
 
     public function testSetAggregateResolverFails()
@@ -209,7 +212,7 @@ class CollectionResolverTest extends TestCase
 
     public function testResolvesToNonAsset()
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(TypeError::class);
         $aggregateResolver = $this->getMockBuilder(ResolverInterface::class)->getMock();
         $aggregateResolver
             ->expects(TestCase::once())
@@ -228,23 +231,17 @@ class CollectionResolverTest extends TestCase
 
     public function testMimeTypesDoNotMatch()
     {
-        $assets = [
-            1 => StringAsset::of('bacon', 'text/plain'),
-            2 => StringAsset::of('eggs', 'text/css'),
-            3 => StringAsset::of('Mud', 'text/javascript')
-        ];
         $this->expectException(RuntimeException::class);
-        $callbackInvocationCount = 0;
-        $callback = function () use (&$callbackInvocationCount, $assets): StringAsset {
-            $callbackInvocationCount++;
-            return $assets[$callbackInvocationCount];
-        };
 
         $aggregateResolver = $this->getMockBuilder(ResolverInterface::class)->getMock();
         $aggregateResolver
             ->expects(TestCase::exactly(2))
             ->method('resolve')
-            ->will(TestCase::returnCallback($callback));
+            ->willReturn(
+                StringAsset::of('bacon', 'text/plain'),
+                StringAsset::of('eggs', 'text/css'),
+                StringAsset::of('Mud', 'text/javascript')
+            );
 
         $assetFilterManager = $this->getMockBuilder(AssetFilterManager::class)->getMock();
         $assetFilterManager
@@ -337,22 +334,15 @@ class CollectionResolverTest extends TestCase
 
     public function testSuccessResolve()
     {
-        $assets = [
-            1 => StringAsset::of('bacon', 'text/plain'),
-            2 => StringAsset::of('eggs', 'text/plain'),
-            3 => StringAsset::of('Mud', 'text/plain'),
-        ];
-        $callbackInvocationCount = 0;
-        $callback = function () use (&$callbackInvocationCount, $assets) : StringAsset {
-            $callbackInvocationCount++;
-            return $assets[$callbackInvocationCount];
-        };
-
         $aggregateResolver = $this->getMockBuilder(ResolverInterface::class)->getMock();
         $aggregateResolver
             ->expects(TestCase::exactly(3))
             ->method('resolve')
-            ->will(TestCase::returnCallback($callback));
+            ->willReturn(
+                StringAsset::of('bacon', 'text/plain'),
+                StringAsset::of('eggs', 'text/plain'),
+                StringAsset::of('Mud', 'text/plain')
+            );
 
         $resolver = new CollectionResolver(array(
             'myCollection' => array(
@@ -363,7 +353,7 @@ class CollectionResolverTest extends TestCase
         ));
 
 
-        $mimeResolver = new MimeResolver;
+        $mimeResolver = new MimeResolver();
         $assetFilterManager = new AssetFilterManager();
 
         $assetFilterManager->setMimeResolver($mimeResolver);
@@ -373,8 +363,8 @@ class CollectionResolverTest extends TestCase
 
         $collectionResolved = $resolver->resolve('myCollection');
 
-        Assert::assertEquals($collectionResolved->getMimeType(), 'text/plain');
-        Assert::assertTrue($collectionResolved instanceof AssetCollection);
+        Assert::assertEquals('text/plain', $collectionResolved->getMimeType());
+        Assert::assertInstanceOf(AssetCollection::class, $collectionResolved);
     }
 
     /**

@@ -19,8 +19,8 @@ class PrioritizedPathsResolverTest extends TestCase
 
         $resolver->addPaths(array(__DIR__));
         Assert::assertEquals(array(__DIR__ . DIRECTORY_SEPARATOR), $resolver->getPaths()->toArray());
-        Assert::assertTrue($resolver instanceof MimeResolverAwareInterface);
-        Assert::assertTrue($resolver instanceof ResolverInterface);
+        Assert::assertInstanceOf(MimeResolverAwareInterface::class, $resolver);
+        Assert::assertInstanceOf(ResolverInterface::class, $resolver);
     }
 
     public function testClearPaths()

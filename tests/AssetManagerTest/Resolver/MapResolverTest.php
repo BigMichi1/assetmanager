@@ -102,9 +102,9 @@ class MapResolverTest extends TestCase
 
     public function testResolveAssetSuccess()
     {
-        $resolver = new MapResolver;
+        $resolver = new MapResolver();
 
-        Assert::assertTrue($resolver instanceof MimeResolverAwareInterface);
+        Assert::assertInstanceOf(MimeResolverAwareInterface::class, $resolver);
 
         $mimeResolver = new MimeResolver;
 

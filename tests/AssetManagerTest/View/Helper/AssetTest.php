@@ -1,4 +1,5 @@
 <?php
+
 namespace AssetManagerTest\View\Helper;
 
 use AssetManager\Cache\FilePathCache;
@@ -13,11 +14,11 @@ class AssetTest extends TestCase
 {
     private function getGenericResolver()
     {
-        $resolver = new MapResolver;
+        $resolver = new MapResolver();
 
-        Assert::assertTrue($resolver instanceof MimeResolverAwareInterface);
+        Assert::assertInstanceOf(MimeResolverAwareInterface::class, $resolver);
 
-        $mimeResolver = new MimeResolver;
+        $mimeResolver = new MimeResolver();
 
         $resolver->setMimeResolver($mimeResolver);
 
@@ -29,8 +30,8 @@ class AssetTest extends TestCase
         $configWithCache = array(
             'view_helper' => array(
                 'append_timestamp' => true,
-                'query_string'     => '_',
-                'cache'            => null,
+                'query_string' => '_',
+                'cache' => null,
             ),
             'caching' => array(
                 'default' => array(
@@ -45,8 +46,8 @@ class AssetTest extends TestCase
         $configWithoutCache = array(
             'view_helper' => array(
                 'append_timestamp' => true,
-                'query_string'     => '_',
-                'cache'            => null,
+                'query_string' => '_',
+                'cache' => null,
             ),
         );
 
@@ -79,8 +80,8 @@ class AssetTest extends TestCase
         $config = array(
             'view_helper' => array(
                 'append_timestamp' => true,
-                'query_string'     => '_',
-                'cache'            => null,
+                'query_string' => '_',
+                'cache' => null,
             ),
         );
 
@@ -104,8 +105,8 @@ class AssetTest extends TestCase
         $config = array(
             'view_helper' => array(
                 'append_timestamp' => false,
-                'query_string'     => '_',
-                'cache'            => null,
+                'query_string' => '_',
+                'cache' => null,
             ),
         );
 

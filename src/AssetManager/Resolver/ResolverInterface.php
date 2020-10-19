@@ -11,13 +11,13 @@ interface ResolverInterface
      *
      * @param string $path The path to resolve.
      *
-     * @return  AssetWithMimeTypeInterface|null Asset instance when found, null when not.
+     * @return AssetWithMimeTypeInterface|null Asset instance when found, null when not.
      */
-    public function resolve(string $path);
+    public function resolve(string $path): ?AssetWithMimeTypeInterface;
 
     /**
      * Collect all assets - used for warm up and for asset extraction
      * @return string[]
      */
-    public function collect();
+    public function collect(): array;
 }
