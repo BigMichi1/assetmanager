@@ -227,8 +227,6 @@ class PrioritizedPathsResolverTest extends TestCase
 
     /**
      * Test Collect returns valid list of assets
-     *
-     * @covers \AssetManager\Resolver\PrioritizedPathsResolver::collect
      */
     public function testCollect()
     {
@@ -241,8 +239,6 @@ class PrioritizedPathsResolverTest extends TestCase
 
     /**
      * Test Collect returns valid list of assets
-     *
-     * @covers \AssetManager\Resolver\PrioritizedPathsResolver::collect
      */
     public function testCollectDirectory()
     {

@@ -15,8 +15,6 @@ class AliasPathStackResolverServiceFactoryTest extends TestCase
 {
     /**
      * Mainly to avoid regressions
-     *
-     * @covers \AssetManager\Service\AliasPathStackResolverServiceFactory
      * @throws \ReflectionException
      */
     public function testCreateService()
@@ -57,7 +55,6 @@ class AliasPathStackResolverServiceFactoryTest extends TestCase
     /**
      * Mainly to avoid regressions
      *
-     * @covers \AssetManager\Service\AliasPathStackResolverServiceFactory
      * @throws \ReflectionException
      */
     public function testCreateServiceWithNoConfig()

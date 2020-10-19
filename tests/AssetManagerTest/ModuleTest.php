@@ -17,9 +17,6 @@ use Laminas\ServiceManager\ServiceLocatorInterface;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \AssetManager\Module
- */
 class ModuleTest extends TestCase
 {
     use EventListenerIntrospectionTrait;
@@ -157,9 +154,6 @@ class ModuleTest extends TestCase
         Assert::assertEquals(200, $return->getStatusCode());
     }
 
-    /**
-     * @covers \AssetManager\Module::onDispatch
-     */
     public function testWillIgnoreInvalidResponseType()
     {
         $cliResponse = $this->getMockBuilder(ConsoleResponse::class)

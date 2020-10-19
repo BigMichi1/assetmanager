@@ -21,7 +21,6 @@ class AliasPathStackResolverTest extends TestCase
     /**
      * Test constructor passes
      *
-     * @covers \AssetManager\Resolver\AliasPathStackResolver::__construct
      * @throws ReflectionException
      */
     public function testConstructor()
@@ -44,8 +43,6 @@ class AliasPathStackResolverTest extends TestCase
 
     /**
      * Test constructor fails when aliases passed in is not an array
-     *
-     * @covers \AssetManager\Resolver\AliasPathStackResolver::__construct
      */
     public function testConstructorFail()
     {
@@ -57,7 +54,6 @@ class AliasPathStackResolverTest extends TestCase
     /**
      * Test add alias method.
      *
-     * @covers \AssetManager\Resolver\AliasPathStackResolver::addAlias
      * @throws ReflectionException
      */
     public function testAddAlias()
@@ -83,7 +79,6 @@ class AliasPathStackResolverTest extends TestCase
     /**
      * Test addAlias fails with bad key
      *
-     * @covers \AssetManager\Resolver\AliasPathStackResolver::addAlias
      * @throws ReflectionException
      */
     public function testAddAliasFailsWithBadKey()
@@ -104,7 +99,6 @@ class AliasPathStackResolverTest extends TestCase
     /**
      * Test addAlias fails with bad Path
      *
-     * @covers \AssetManager\Resolver\AliasPathStackResolver::addAlias
      * @throws ReflectionException
      */
     public function testAddAliasFailsWithBadPath()
@@ -126,7 +120,6 @@ class AliasPathStackResolverTest extends TestCase
     /**
      * Test normalize path
      *
-     * @covers \AssetManager\Resolver\AliasPathStackResolver::normalizePath
      * @throws ReflectionException
      */
     public function testNormalizePath()
@@ -147,9 +140,6 @@ class AliasPathStackResolverTest extends TestCase
 
     /**
      * Test Set Mime Resolver Only Accepts a mime Resolver
-     *
-     * @covers \AssetManager\Resolver\AliasPathStackResolver::setMimeResolver
-     * @covers \AssetManager\Resolver\AliasPathStackResolver::getMimeResolver
      */
     public function testGetAndSetMimeResolver()
     {
@@ -168,8 +158,6 @@ class AliasPathStackResolverTest extends TestCase
 
     /**
      * Test Set Mime Resolver Only Accepts a mime Resolver
-     *
-     * @covers \AssetManager\Resolver\AliasPathStackResolver::setMimeResolver
      */
     public function testSetMimeResolverFailObject()
     {
@@ -181,8 +169,6 @@ class AliasPathStackResolverTest extends TestCase
 
     /**
      * Test Lfi Protection Flag Defaults to true
-     *
-     * @covers \AssetManager\Resolver\AliasPathStackResolver::isLfiProtectionOn
      */
     public function testLfiProtectionFlagDefaultsTrue()
     {
@@ -194,9 +180,6 @@ class AliasPathStackResolverTest extends TestCase
 
     /**
      * Test Get and Set of Lfi Protection Flag
-     *
-     * @covers \AssetManager\Resolver\AliasPathStackResolver::setLfiProtection
-     * @covers \AssetManager\Resolver\AliasPathStackResolver::isLfiProtectionOn
      */
     public function testGetAndSetOfLfiProtectionFlag()
     {
@@ -214,8 +197,6 @@ class AliasPathStackResolverTest extends TestCase
 
     /**
      * Test Resolve returns valid asset
-     *
-     * @covers \AssetManager\Resolver\AliasPathStackResolver::resolve
      */
     public function testResolve()
     {
@@ -231,8 +212,6 @@ class AliasPathStackResolverTest extends TestCase
 
     /**
      * Test Resolve returns valid asset
-     *
-     * @covers \AssetManager\Resolver\AliasPathStackResolver::resolve
      */
     public function testResolveWhenAliasStringDoesnotContainTrailingSlash()
     {
@@ -244,9 +223,6 @@ class AliasPathStackResolverTest extends TestCase
         Assert::assertEquals($fileAsset, $resolver->resolve('my/alias/' . basename(__FILE__)));
     }
 
-    /**
-     * @covers \AssetManager\Resolver\AliasPathStackResolver::resolve
-     */
     public function testResolveWhenAliasExistsInPath()
     {
         $resolver = new AliasPathStackResolver(array('AliasPathStackResolverTest/' => __DIR__));
@@ -269,8 +245,6 @@ class AliasPathStackResolverTest extends TestCase
 
     /**
      * Test that resolver will not resolve directories
-     *
-     * @covers \AssetManager\Resolver\AliasPathStackResolver::resolve
      */
     public function testWillNotResolveDirectories()
     {
@@ -280,8 +254,6 @@ class AliasPathStackResolverTest extends TestCase
 
     /**
      * Test Lfi Protection
-     *
-     * @covers \AssetManager\Resolver\AliasPathStackResolver::resolve
      */
     public function testLfiProtection()
     {
@@ -308,8 +280,6 @@ class AliasPathStackResolverTest extends TestCase
 
     /**
      * Test Collect returns valid list of assets
-     *
-     * @covers \AssetManager\Resolver\AliasPathStackResolver::collect
      */
     public function testCollect()
     {
@@ -322,8 +292,6 @@ class AliasPathStackResolverTest extends TestCase
 
     /**
      * Test Collect returns valid list of assets
-     *
-     * @covers \AssetManager\Resolver\AliasPathStackResolver::collect
      */
     public function testCollectDirectory()
     {

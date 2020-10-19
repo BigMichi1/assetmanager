@@ -17,8 +17,6 @@ class ModuleServiceManagerConfigTest extends TestCase
 {
     /**
      * Test the Service Managers Factories.
-     *
-     * @coversNothing
      */
     public function testServiceManagerFactories()
     {
@@ -41,8 +39,6 @@ class ModuleServiceManagerConfigTest extends TestCase
 
     /**
      * Test the Service Managers Invokables.
-     *
-     * @coversNothing
      */
     public function testServiceManagerInvokables()
     {
@@ -65,8 +61,6 @@ class ModuleServiceManagerConfigTest extends TestCase
 
     /**
      * Test the Service Managers Invokables.
-     *
-     * @coversNothing
      */
     public function testServiceManagerAliases()
     {
@@ -89,8 +83,6 @@ class ModuleServiceManagerConfigTest extends TestCase
 
     /**
      * Test for Issue #134 - Test for specific mime_resolver invokable
-     *
-     * @coversNothing
      */
     public function mimeResolverInvokableTest()
     {
@@ -107,8 +99,6 @@ class ModuleServiceManagerConfigTest extends TestCase
 
     /**
      * Test for Issue #134 - Test for specific mime_resolver alias
-     *
-     * @coversNothing
      */
     public function mimeResolverAliasTest()
     {

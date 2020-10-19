@@ -1,22 +1,23 @@
-before_commands:
-    - "composer install --dev --prefer-source"
-
-build:
-    nodes:
-        analysis:
-            tests:
-                override:
-                    - php-scrutinizer-run
-        coverage:
-            tests:
-                override:
-                    - command: composer test
-                      coverage:
-                          file: clover.xml
-                          format: clover
-
+imports:
+  - php
 checks:
     php: true
-
-imports:
-    - php
+build:
+  nodes:
+    analysis:
+      environment:
+        php: 7.2
+      dependencies:
+        before:
+          - composer update --dev --prefer-source
+      tests:
+        override:
+          - php-scrutinizer-run
+          - phpcs-run --standard=PSR2 ./src ./tests/AssetManagerTest
+    coverage:
+      tests:
+        override:
+          - command: composer test
+            coverage:
+              file: clover.xml
+              format: clover

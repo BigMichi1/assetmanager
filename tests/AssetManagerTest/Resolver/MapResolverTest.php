@@ -152,8 +152,6 @@ class MapResolverTest extends TestCase
 
     /**
      * Test Collect returns valid list of assets
-     *
-     * @covers \AssetManager\Resolver\MapResolver::collect
      */
     public function testCollect()
     {

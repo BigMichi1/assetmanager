@@ -21,9 +21,6 @@ use ReflectionProperty;
  */
 class AssetCacheManagerTest extends TestCase
 {
-    /**
-     * @covers \AssetManager\Service\AssetCacheManager::setCache
-     */
     public function testSetCache()
     {
         $serviceManager = new ServiceManager();
@@ -48,9 +45,6 @@ class AssetCacheManagerTest extends TestCase
         Assert::assertEquals($mockAsset->getMimeType(), $assetCache->getMimeType());
     }
 
-    /**
-     * @covers \AssetManager\Service\AssetCacheManager::setCache
-     */
     public function testSetCacheNoProviderFound()
     {
         $serviceManager = new ServiceManager();
@@ -73,9 +67,6 @@ class AssetCacheManagerTest extends TestCase
         Assert::assertFalse($assetCache instanceof AssetCache);
     }
 
-    /**
-     * @covers \AssetManager\Service\AssetCacheManager::getProvider
-     */
     public function testGetProvider()
     {
         $serviceManager = new ServiceManager();
@@ -98,9 +89,6 @@ class AssetCacheManagerTest extends TestCase
         Assert::assertTrue($provider instanceof CacheInterface);
     }
 
-    /**
-     * @covers \AssetManager\Service\AssetCacheManager::getProvider
-     */
     public function testGetProviderUsingDefaultConfiguration()
     {
         $serviceManager = new ServiceManager();
@@ -122,9 +110,6 @@ class AssetCacheManagerTest extends TestCase
         Assert::assertTrue($provider instanceof CacheInterface);
     }
 
-    /**
-     * @covers \AssetManager\Service\AssetCacheManager::getProvider
-     */
     public function testGetProviderWithDefinedService()
     {
         $serviceManager = new ServiceManager();
@@ -154,9 +139,6 @@ class AssetCacheManagerTest extends TestCase
         Assert::assertTrue($provider instanceof FilePathCache);
     }
 
-    /**
-     * @covers \AssetManager\Service\AssetCacheManager::getProvider
-     */
     public function testGetProviderWithCacheOptions()
     {
         $serviceManager = new ServiceManager();
@@ -194,9 +176,6 @@ class AssetCacheManagerTest extends TestCase
         Assert::assertTrue($reflectionProperty->getValue($provider) == 'somewhere');
     }
 
-    /**
-     * @covers \AssetManager\Service\AssetCacheManager::getProvider
-     */
     public function testGetProviderWithMultipleDefinition()
     {
         $serviceManager = new ServiceManager();
@@ -244,9 +223,6 @@ class AssetCacheManagerTest extends TestCase
         Assert::assertTrue($provider instanceof FilePathCache);
     }
 
-    /**
-     * @covers \AssetManager\Service\AssetCacheManager::getProvider
-     */
     public function testGetProviderWithNoCacheConfig()
     {
         $serviceManager = new ServiceManager();
@@ -262,9 +238,6 @@ class AssetCacheManagerTest extends TestCase
         Assert::assertNull($provider);
     }
 
-    /**
-     * @covers \AssetManager\Service\AssetCacheManager::getCacheProviderConfig
-     */
     public function testGetCacheProviderConfig()
     {
         $expected = array(
@@ -290,9 +263,6 @@ class AssetCacheManagerTest extends TestCase
         Assert::assertEquals($expected, $providerConfig);
     }
 
-    /**
-     * @covers \AssetManager\Service\AssetCacheManager::getCacheProviderConfig
-     */
     public function testGetCacheProviderConfigReturnsDefaultCache()
     {
         $expected = array(
@@ -321,9 +291,6 @@ class AssetCacheManagerTest extends TestCase
         Assert::assertEquals($expected, $providerConfig);
     }
 
-    /**
-     * @covers \AssetManager\Service\AssetCacheManager::classMapper
-     */
     public function testClassMapperResolvesFilesystemCache()
     {
         $serviceManager = new ServiceManager();
@@ -339,9 +306,6 @@ class AssetCacheManagerTest extends TestCase
         Assert::assertEquals(FilesystemCache::class, $class);
     }
 
-    /**
-     * @covers \AssetManager\Service\AssetCacheManager::classMapper
-     */
     public function testClassMapperResolvesFilePathCache()
     {
         $serviceManager = new ServiceManager();
@@ -358,9 +322,6 @@ class AssetCacheManagerTest extends TestCase
         Assert::assertEquals(FilePathCache::class, $class);
     }
 
-    /**
-     * @covers \AssetManager\Service\AssetCacheManager::classMapper
-     */
     public function testClassMapperResolvesShorthandClassAlias()
     {
         $serviceManager = new ServiceManager();

@@ -134,8 +134,6 @@ class PathStackResolverTest extends TestCase
 
     /**
      * Test Collect returns valid list of assets
-     *
-     * @covers \AssetManager\Resolver\PathStackResolver::collect
      */
     public function testCollect()
     {
@@ -148,8 +146,6 @@ class PathStackResolverTest extends TestCase
 
     /**
      * Test Collect returns valid list of assets
-     *
-     * @covers \AssetManager\Resolver\PathStackResolver::collect
      */
     public function testCollectDirectory()
     {
