@@ -515,8 +515,9 @@ class AssetManagerTest extends TestCase
     /**
      * @return AssetCacheManager&MockObject
      */
-    protected function getAssetCacheManagerMock(): AssetCacheManager
+    private function getAssetCacheManagerMock(): AssetCacheManager
     {
+        /** @var  AssetCacheManager&MockObject $assetCacheManager */
         $assetCacheManager = $this
             ->getMockBuilder(AssetCacheManager::class)
             ->disableOriginalConstructor()
