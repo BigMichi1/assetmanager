@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace AssetManager\Resolver;
 
@@ -180,7 +181,7 @@ class AliasPathStackResolver implements ResolverInterface, MimeResolverAwareInte
                 }
                 if ($pathInfo->isDir()) {
                     foreach (new DirectoryResource($pathInfo->getRealPath()) as $resource) {
-                        $locations->push(new SplFileInfo($resource));
+                        $locations->push(new SplFileInfo((string)$resource));
                     }
                 } else {
                     $collection[] = $alias . substr($pathInfo->getRealPath(), strlen($basePath));

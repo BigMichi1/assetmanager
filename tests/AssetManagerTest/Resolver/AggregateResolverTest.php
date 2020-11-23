@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace AssetManagerTest\Resolver;
 
@@ -6,6 +7,7 @@ use AssetManager\Asset\StringAsset;
 use AssetManager\Resolver\AggregateResolver;
 use AssetManager\Resolver\ResolverInterface;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class AggregateResolverTest extends TestCase
@@ -16,6 +18,7 @@ class AggregateResolverTest extends TestCase
 
         Assert::assertInstanceOf(ResolverInterface::class, $resolver);
 
+        /** @var ResolverInterface&MockObject $lowPriority */
         $lowPriority = $this
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
@@ -30,6 +33,7 @@ class AggregateResolverTest extends TestCase
 
         Assert::assertSame('first', $assetLowPriority->getContent());
 
+        /** @var ResolverInterface&MockObject $highPriority */
         $highPriority = $this
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
@@ -45,6 +49,7 @@ class AggregateResolverTest extends TestCase
 
         Assert::assertSame('second', $assetHighPriority->getContent());
 
+        /** @var ResolverInterface&MockObject $averagePriority */
         $averagePriority = $this
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
@@ -63,6 +68,7 @@ class AggregateResolverTest extends TestCase
     public function testCollectWithCollectMethod()
     {
         $resolver = new AggregateResolver();
+        /** @var ResolverInterface&MockObject $lowPriority */
         $lowPriority = $this
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
@@ -74,6 +80,7 @@ class AggregateResolverTest extends TestCase
 
         Assert::assertContains('one', $resolver->collect());
 
+        /** @var ResolverInterface&MockObject $highPriority */
         $highPriority = $this
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
@@ -93,6 +100,7 @@ class AggregateResolverTest extends TestCase
     public function testCollectWithoutCollectMethod()
     {
         $resolver = new AggregateResolver();
+        /** @var ResolverInterface&MockObject $lowPriority */
         $lowPriority = $this
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
@@ -105,6 +113,7 @@ class AggregateResolverTest extends TestCase
 
         Assert::assertEquals(array(), $resolver->collect());
 
+        /** @var ResolverInterface&MockObject $highPriority */
         $highPriority = $this
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();

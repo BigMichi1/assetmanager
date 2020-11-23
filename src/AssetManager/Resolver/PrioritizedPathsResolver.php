@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace AssetManager\Resolver;
 
@@ -212,7 +213,7 @@ class PrioritizedPathsResolver implements ResolverInterface, MimeResolverAwareIn
                 }
                 if ($pathInfo->isDir()) {
                     foreach (new DirectoryResource($pathInfo->getRealPath()) as $resource) {
-                        $locations->push(new SplFileInfo($resource));
+                        $locations->push(new SplFileInfo((string)$resource));
                     }
                 } else {
                     $collection[] = substr($pathInfo->getRealPath(), strlen($basePath));

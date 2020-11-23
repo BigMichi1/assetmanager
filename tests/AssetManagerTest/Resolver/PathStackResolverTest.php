@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace AssetManagerTest\Resolver;
 
@@ -11,8 +12,6 @@ use AssetManager\Resolver\ResolverInterface;
 use AssetManager\Service\MimeResolver;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
-use stdClass;
-use TypeError;
 
 class PathStackResolverTest extends TestCase
 {
@@ -36,22 +35,6 @@ class PathStackResolverTest extends TestCase
         Assert::assertEquals($mimeResolver, $resolver->getMimeResolver());
     }
 
-    public function testSetMimeResolverFailObject()
-    {
-        $this->expectException(TypeError::class);
-
-        $resolver = new PathStackResolver();
-        $resolver->setMimeResolver(new stdClass());
-    }
-
-    public function testSetMimeResolverFailString()
-    {
-        $this->expectException(TypeError::class);
-
-        $resolver = new PathStackResolver();
-        $resolver->setMimeResolver('invalid');
-    }
-
     public function testSetPaths()
     {
         $resolver = new PathStackResolver();
@@ -71,9 +54,6 @@ class PathStackResolverTest extends TestCase
             array('dir3' . DIRECTORY_SEPARATOR, 'dir4' . DIRECTORY_SEPARATOR),
             $resolver->getPaths()->toArray()
         );
-
-        $this->expectException(InvalidArgumentException::class);
-        $resolver->setPaths('invalid');
     }
 
     public function testResolve()

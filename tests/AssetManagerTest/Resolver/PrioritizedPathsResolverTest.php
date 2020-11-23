@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace AssetManagerTest\Resolver;
 
@@ -69,9 +70,6 @@ class PrioritizedPathsResolverTest extends TestCase
             array('dir2' . DIRECTORY_SEPARATOR, 'dir3' . DIRECTORY_SEPARATOR, 'dir1' . DIRECTORY_SEPARATOR),
             $fetched
         );
-
-        $this->expectException(InvalidArgumentException::class);
-        $resolver->setPaths('invalid');
     }
 
     public function testAddPaths()

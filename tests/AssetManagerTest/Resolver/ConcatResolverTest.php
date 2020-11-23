@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace AssetManagerTest\Resolver;
 
@@ -11,11 +12,9 @@ use AssetManager\Resolver\ResolverInterface;
 use AssetManager\Service\AssetFilterManager;
 use AssetManager\Service\MimeResolver;
 use AssetManagerTest\Service\ConcatIterable;
-use Laminas\Stdlib\Exception\InvalidArgumentException;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use stdClass;
-use TypeError;
 
 class ConcatResolverTest extends TestCase
 {
@@ -50,8 +49,9 @@ class ConcatResolverTest extends TestCase
 
     public function testSetGetAggregateResolver()
     {
-        $resolver = new ConcatResolver;
+        $resolver = new ConcatResolver();
 
+        /** @var ResolverInterface&MockObject $aggregateResolver */
         $aggregateResolver = $this
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
@@ -67,15 +67,6 @@ class ConcatResolverTest extends TestCase
         $asset->load();
 
         Assert::assertEquals('world', $asset->getContent());
-    }
-
-    public function testSetAggregateResolverFails()
-    {
-        $this->expectException(TypeError::class);
-
-        $resolver = new ConcatResolver;
-
-        $resolver->setAggregateResolver(new stdClass());
     }
 
     public function testSetConcatSuccess()
@@ -105,13 +96,6 @@ class ConcatResolverTest extends TestCase
             ),
             $resolver->getConcats()
         );
-    }
-
-    public function testSetConcatFails()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $resolver = new ConcatResolver;
-        $resolver->setConcats(new stdClass());
     }
 
     public function testGetConcat()
@@ -152,6 +136,7 @@ class ConcatResolverTest extends TestCase
             return new FileAsset($file);
         };
 
+        /** @var ResolverInterface&MockObject $aggregateResolver */
         $aggregateResolver = $this
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();

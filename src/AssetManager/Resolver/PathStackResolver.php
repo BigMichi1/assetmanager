@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace AssetManager\Resolver;
 
@@ -213,7 +214,7 @@ class PathStackResolver implements ResolverInterface, MimeResolverAwareInterface
                 if ($pathInfo->isDir()) {
                     $dir = new DirectoryResource($pathInfo->getRealPath());
                     foreach ($dir as $resource) {
-                        $locations->push(new SplFileInfo($resource));
+                        $locations->push(new SplFileInfo((string)$resource));
                     }
                 } elseif (!isset($collection[$pathInfo->getPath()])) {
                     $collection[] = substr($pathInfo->getRealPath(), strlen($basePath));

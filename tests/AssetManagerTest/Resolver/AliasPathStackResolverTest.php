@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace AssetManagerTest\Resolver;
 
@@ -7,11 +8,10 @@ use AssetManager\Exception\InvalidArgumentException;
 use AssetManager\Resolver\AliasPathStackResolver;
 use AssetManager\Service\MimeResolver;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionException;
-use stdClass;
-use TypeError;
 
 /**
  * Unit Tests for the Alias Path Stack Resolver
@@ -39,16 +39,6 @@ class AliasPathStackResolverTest extends TestCase
             $aliases,
             $property->getValue($resolver)
         );
-    }
-
-    /**
-     * Test constructor fails when aliases passed in is not an array
-     */
-    public function testConstructorFail()
-    {
-        $this->expectException(TypeError::class);
-
-        new AliasPathStackResolver('this_should_fail');
     }
 
     /**
@@ -143,6 +133,7 @@ class AliasPathStackResolverTest extends TestCase
      */
     public function testGetAndSetMimeResolver()
     {
+        /** @var MimeResolver&MockObject $mimeResolver */
         $mimeResolver = $this->getMockBuilder(MimeResolver::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -154,17 +145,6 @@ class AliasPathStackResolverTest extends TestCase
         $returned = $resolver->getMimeResolver();
 
         Assert::assertEquals($mimeResolver, $returned);
-    }
-
-    /**
-     * Test Set Mime Resolver Only Accepts a mime Resolver
-     */
-    public function testSetMimeResolverFailObject()
-    {
-        $this->expectException(TypeError::class);
-
-        $resolver = new AliasPathStackResolver(array('my/alias/' => __DIR__));
-        $resolver->setMimeResolver(new stdClass());
     }
 
     /**

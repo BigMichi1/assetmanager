@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace AssetManagerTest\Resolver;
 
@@ -6,9 +7,7 @@ use ArrayObject;
 use Assetic\Contracts\Cache\CacheInterface;
 use AssetManager\Asset\AssetCache;
 use AssetManager\Asset\AssetCollection;
-use AssetManager\Asset\FileAsset;
 use AssetManager\Asset\StringAsset;
-use AssetManager\Exception\InvalidArgumentException;
 use AssetManager\Exception\RuntimeException;
 use AssetManager\Resolver\AggregateResolverAwareInterface;
 use AssetManager\Resolver\CollectionResolver;
@@ -17,24 +16,13 @@ use AssetManager\Service\AssetFilterManager;
 use AssetManager\Service\MimeResolver;
 use AssetManagerTest\Service\CollectionsIterable;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use TypeError;
 
 class CollectionResolverTest extends TestCase
 {
-    public function getResolverMock()
-    {
-        $resolver = $this->getMockBuilder(ResolverInterface::class)->getMock();
-        $resolver
-            ->expects(TestCase::once())
-            ->method('resolve')
-            ->with('bacon')
-            ->will(TestCase::returnValue(new FileAsset(__FILE__)));
-
-        return $resolver;
-    }
-
     public function testConstructor()
     {
         $resolver = new CollectionResolver();
@@ -115,26 +103,11 @@ class CollectionResolverTest extends TestCase
         Assert::assertEquals($collArr, $resolver->getCollections());
     }
 
-    public function testSetCollectionFailsObject()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $resolver = new CollectionResolver;
-
-        $resolver->setCollections(new stdClass());
-    }
-
-    public function testSetCollectionFailsString()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $resolver = new CollectionResolver;
-
-        $resolver->setCollections('invalid');
-    }
-
     public function testSetGetAggregateResolver()
     {
         $resolver = new CollectionResolver;
 
+        /** @var ResolverInterface&MockObject $aggregateResolver */
         $aggregateResolver = $this
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
@@ -150,15 +123,6 @@ class CollectionResolverTest extends TestCase
         $asset->load();
 
         Assert::assertEquals('world', $asset->getContent());
-    }
-
-    public function testSetAggregateResolverFails()
-    {
-        $this->expectException(TypeError::class);
-
-        $resolver = new CollectionResolver;
-
-        $resolver->setAggregateResolver(new stdClass());
     }
 
     /**
@@ -192,6 +156,8 @@ class CollectionResolverTest extends TestCase
     public function testCouldNotResolve()
     {
         $this->expectException(RuntimeException::class);
+
+        /** @var ResolverInterface&MockObject $aggregateResolver */
         $aggregateResolver = $this
             ->getMockBuilder(ResolverInterface::class)
             ->getMock();
@@ -213,7 +179,11 @@ class CollectionResolverTest extends TestCase
     public function testResolvesToNonAsset()
     {
         $this->expectException(TypeError::class);
-        $aggregateResolver = $this->getMockBuilder(ResolverInterface::class)->getMock();
+
+        /** @var ResolverInterface&MockObject $aggregateResolver */
+        $aggregateResolver = $this
+            ->getMockBuilder(ResolverInterface::class)
+            ->getMock();
         $aggregateResolver
             ->expects(TestCase::once())
             ->method('resolve')
@@ -233,7 +203,10 @@ class CollectionResolverTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $aggregateResolver = $this->getMockBuilder(ResolverInterface::class)->getMock();
+        /** @var ResolverInterface&MockObject $aggregateResolver */
+        $aggregateResolver = $this
+            ->getMockBuilder(ResolverInterface::class)
+            ->getMock();
         $aggregateResolver
             ->expects(TestCase::exactly(2))
             ->method('resolve')
@@ -243,7 +216,10 @@ class CollectionResolverTest extends TestCase
                 StringAsset::of('Mud', 'text/javascript')
             );
 
-        $assetFilterManager = $this->getMockBuilder(AssetFilterManager::class)->getMock();
+        /** @var AssetFilterManager&MockObject $assetFilterManager */
+        $assetFilterManager = $this
+            ->getMockBuilder(AssetFilterManager::class)
+            ->getMock();
         $assetFilterManager
             ->expects(TestCase::once())
             ->method('setFilters')
@@ -265,7 +241,10 @@ class CollectionResolverTest extends TestCase
 
     public function testTwoCollectionsHasDifferentCacheKey()
     {
-        $aggregateResolver = $this->getMockBuilder(ResolverInterface::class)->getMock();
+        /** @var ResolverInterface&MockObject $aggregateResolver */
+        $aggregateResolver = $this
+            ->getMockBuilder(ResolverInterface::class)
+            ->getMock();
 
         //assets with same 'last modified time'.
         $now = time();
@@ -304,7 +283,10 @@ class CollectionResolverTest extends TestCase
         $collection1 = $resolver->resolve('collection1');
         $collection2 = $resolver->resolve('collection2');
 
-        $cacheInterface = $this->getMockBuilder(CacheInterface::class)->getMock();
+        /** @var CacheInterface&MockObject $cacheInterface */
+        $cacheInterface = $this
+            ->getMockBuilder(CacheInterface::class)
+            ->getMock();
 
         $cacheKeys = new ArrayObject();
         $callback = function ($key) use ($cacheKeys): bool {
@@ -334,7 +316,10 @@ class CollectionResolverTest extends TestCase
 
     public function testSuccessResolve()
     {
-        $aggregateResolver = $this->getMockBuilder(ResolverInterface::class)->getMock();
+        /** @var ResolverInterface&MockObject $aggregateResolver */
+        $aggregateResolver = $this
+            ->getMockBuilder(ResolverInterface::class)
+            ->getMock();
         $aggregateResolver
             ->expects(TestCase::exactly(3))
             ->method('resolve')

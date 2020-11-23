@@ -4,14 +4,13 @@ namespace AssetManagerTest\Resolver;
 
 use AssetManager\Asset\FileAsset;
 use AssetManager\Asset\HttpAsset;
-use AssetManager\Exception\InvalidArgumentException;
 use AssetManager\Resolver\MapResolver;
 use AssetManager\Resolver\MimeResolverAwareInterface;
 use AssetManager\Service\MimeResolver;
 use AssetManagerTest\Service\MapIterable;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use stdClass;
 
 class MapResolverTest extends TestCase
 {
@@ -68,14 +67,6 @@ class MapResolverTest extends TestCase
         );
     }
 
-    public function testSetMapFails()
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $resolver = new MapResolver;
-        $resolver->setMap(new stdClass());
-    }
-
     public function testGetMap()
     {
         $resolver = new MapResolver;
@@ -125,7 +116,8 @@ class MapResolverTest extends TestCase
 
     public function testResolveHttpAssetSuccess()
     {
-        $resolver = new MapResolver;
+        $resolver = new MapResolver();
+        /** @var MimeResolver&MockObject $mimeResolver */
         $mimeResolver = $this
             ->getMockBuilder(MimeResolver::class)
             ->getMock();

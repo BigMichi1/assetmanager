@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace AssetManager\Resolver;
 
@@ -14,7 +15,7 @@ use Traversable;
 
 /**
  * This resolver allows the resolving of concatenated files.
- * Concatted files are added as an StringAsset and filters get applied to concatenated string.
+ * Contacted files are added as an StringAsset and filters get applied to concatenated string.
  */
 class ConcatResolver implements
     ResolverInterface,
