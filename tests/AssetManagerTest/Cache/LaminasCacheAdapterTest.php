@@ -3,11 +3,10 @@
 namespace AssetManagerTest\Cache;
 
 use AssetManager\Cache\LaminasCacheAdapter;
-use DateTime;
 use Laminas\Cache\Storage\Adapter\Memory;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use TypeError;
 
 /**
  * Test file for Laminas Cache Adapter
@@ -18,7 +17,9 @@ class LaminasCacheAdapterTest extends TestCase
 {
     public function testConstructor()
     {
-        $mockLaminasCache = $this->getMockBuilder(Memory::class)
+        /** @var Memory&MockObject $mockLaminasCache */
+        $mockLaminasCache = $this
+            ->getMockBuilder(Memory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -27,16 +28,11 @@ class LaminasCacheAdapterTest extends TestCase
         Assert::assertInstanceOf(LaminasCacheAdapter::class, $adapter);
     }
 
-    public function testConstructorOnlyAcceptsALaminasCacheStorageInterface()
-    {
-        $this->expectException(TypeError::class);
-
-        new LaminasCacheAdapter(new DateTime());
-    }
-
     public function testHasMethodCallsLaminasCacheHasItem()
     {
-        $mockLaminasCache = $this->getMockBuilder(Memory::class)
+        /** @var Memory&MockObject $mockLaminasCache */
+        $mockLaminasCache = $this
+            ->getMockBuilder(Memory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -49,7 +45,9 @@ class LaminasCacheAdapterTest extends TestCase
 
     public function testGetMethodCallsLaminasCacheGetItem()
     {
-        $mockLaminasCache = $this->getMockBuilder(Memory::class)
+        /** @var Memory&MockObject $mockLaminasCache */
+        $mockLaminasCache = $this
+            ->getMockBuilder(Memory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -62,7 +60,9 @@ class LaminasCacheAdapterTest extends TestCase
 
     public function testSetMethodCallsLaminasCacheSetItem()
     {
-        $mockLaminasCache = $this->getMockBuilder(Memory::class)
+        /** @var Memory&MockObject $mockLaminasCache */
+        $mockLaminasCache = $this
+            ->getMockBuilder(Memory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -70,12 +70,14 @@ class LaminasCacheAdapterTest extends TestCase
             ->method('setItem');
 
         $adapter = new LaminasCacheAdapter($mockLaminasCache);
-        $adapter->set('SomeKey', array());
+        $adapter->set('SomeKey', '');
     }
 
     public function testRemoveMethodCallsLaminasCacheRemoveItem()
     {
-        $mockLaminasCache = $this->getMockBuilder(Memory::class)
+        /** @var Memory&MockObject $mockLaminasCache */
+        $mockLaminasCache = $this
+            ->getMockBuilder(Memory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
