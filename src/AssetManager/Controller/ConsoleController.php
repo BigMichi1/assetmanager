@@ -71,8 +71,8 @@ class ConsoleController extends AbstractActionController
         if (!($request instanceof Request)) {
             throw new RuntimeException('You can use this controller only from a console!');
         }
-        $purge = (bool)$request->getParam('purge', false);
-        $verbose = (bool)$request->getParam('verbose', false) || (bool)$request->getParam('v', false);
+        $purge = (bool)$request->getParam('purge', '');
+        $verbose = (bool)$request->getParam('verbose', '') || (bool)$request->getParam('v', '');
 
         // purge cache for every configuration
         if ($purge) {
