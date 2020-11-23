@@ -1,8 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace AssetManagerTest\Service;
 
-class CollectionsIterable implements \IteratorAggregate
+use ArrayObject;
+use IteratorAggregate;
+use Traversable;
+
+class CollectionsIterable implements IteratorAggregate
 {
     public $collectionName1 = array(
         'collection 1.1',
@@ -25,8 +30,8 @@ class CollectionsIterable implements \IteratorAggregate
         'collection 3.4',
     );
 
-    public function getIterator()
+    public function getIterator(): Traversable
     {
-        return new \ArrayIterator($this);
+        return new ArrayObject($this);
     }
 }

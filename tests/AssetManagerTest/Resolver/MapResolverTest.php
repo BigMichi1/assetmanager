@@ -41,8 +41,7 @@ class MapResolverTest extends TestCase
 
     public function testSetMapSuccess()
     {
-        $resolver = new MapResolver;
-        $resolver->setMap(new MapIterable());
+        $resolver = new MapResolver(new MapIterable());
 
         Assert::assertEquals(
             array(

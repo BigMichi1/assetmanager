@@ -1,32 +1,37 @@
 <?php
+declare(strict_types=1);
 
 namespace AssetManagerTest\Service;
 
-class ConcatIterable implements \IteratorAggregate
+use ArrayObject;
+use IteratorAggregate;
+use Traversable;
+
+class ConcatIterable implements IteratorAggregate
 {
-    public $mapName1 = array(
-        'map 1.1',
-        'map 1.2',
-        'map 1.3',
-        'map 1.4',
+    public $concatName1 = array(
+        'concat 1.1',
+        'concat 1.2',
+        'concat 1.3',
+        'concat 1.4',
     );
 
-    public $mapName2 = array(
-        'map 2.1',
-        'map 2.2',
-        'map 2.3',
-        'map 2.4',
+    public $concatName2 = array(
+        'concat 2.1',
+        'concat 2.2',
+        'concat 2.3',
+        'concat 2.4',
     );
 
-    public $mapName3 = array(
-        'map 3.1',
-        'map 3.2',
-        'map 3.3',
-        'map 3.4',
+    public $concatName3 = array(
+        'concat 3.1',
+        'concat 3.2',
+        'concat 3.3',
+        'concat 3.4',
     );
 
-    public function getIterator()
+    public function getIterator(): Traversable
     {
-        return new \ArrayIterator($this);
+        return new ArrayObject($this);
     }
 }

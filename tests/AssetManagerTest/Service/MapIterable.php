@@ -1,8 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace AssetManagerTest\Service;
 
-class MapIterable implements \IteratorAggregate
+use ArrayObject;
+use IteratorAggregate;
+use Traversable;
+
+class MapIterable implements IteratorAggregate
 {
     public $mapName1 = array(
         'map 1.1',
@@ -25,8 +30,8 @@ class MapIterable implements \IteratorAggregate
         'map 3.4',
     );
 
-    public function getIterator()
+    public function getIterator(): Traversable
     {
-        return new \ArrayIterator($this);
+        return new ArrayObject($this);
     }
 }
