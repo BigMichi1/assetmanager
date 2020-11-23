@@ -168,7 +168,7 @@ class AssetManager implements
             $response->getHeaders()
                 ->addHeaderLine('Content-Transfer-Encoding', 'binary')
                 ->addHeaderLine('Content-Type', $mimeType)
-                ->addHeaderLine('Content-Length', $contentLength);
+                ->addHeaderLine('Content-Length', strval($contentLength));
         }
 
         $response->setContent($assetContents);
